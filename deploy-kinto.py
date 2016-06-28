@@ -52,7 +52,7 @@ cliquet.http_scheme = https
 cliquet.http_host = https://%(id_alwaysdata)s.alwaysdata.net/
 
 cliquet.project_name = kinto
-cliquet.project_docs = https://kinto.readthedocs.org/
+cliquet.project_docs = https://kinto.readthedocs.io/
 
 #
 # Backends.
