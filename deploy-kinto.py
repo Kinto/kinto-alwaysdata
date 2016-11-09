@@ -48,37 +48,37 @@ use = egg:kinto
 
 pyramid.debug_notfound = false
 
-cliquet.http_scheme = https
-cliquet.http_host = https://%(id_alwaysdata)s.alwaysdata.net/
+kinto.http_scheme = https
+kinto.http_host = https://%(id_alwaysdata)s.alwaysdata.net/
 
-cliquet.project_name = kinto
-cliquet.project_docs = https://kinto.readthedocs.io/
+kinto.project_name = kinto
+kinto.project_docs = https://kinto.readthedocs.io/
 
 #
 # Backends.
 #
-cliquet.cache_backend = cliquet.cache.postgresql
-cliquet.cache_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
+kinto.cache_backend = kinto.core.cache.postgresql
+kinto.cache_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
 
-cliquet.storage_backend = cliquet.storage.postgresql
-cliquet.storage_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
+kinto.storage_backend = kinto.core.storage.postgresql
+kinto.storage_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
 
-cliquet.permission_backend = cliquet.permission.postgresql
-cliquet.permission_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
+kinto.permission_backend = kinto.core.permission.postgresql
+kinto.permission_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
 
-# cliquet.backoff = 10
-cliquet.batch_max_requests = 25
-# cliquet.retry_after_seconds = 30
-# cliquet.eos =
+# kinto.backoff = 10
+kinto.batch_max_requests = 25
+# kinto.retry_after_seconds = 30
+# kinto.eos =
 
 #
 # Auth configuration.
 #
-cliquet.userid_hmac_secret = %(hmac_secret)s
+kinto.userid_hmac_secret = %(hmac_secret)s
 multiauth.policies = basicauth
 
 [loggers]
-keys = root, cliquet
+keys = root, kinto
 
 [handlers]
 keys = console
@@ -90,10 +90,10 @@ keys = generic
 level = INFO
 handlers = console
 
-[logger_cliquet]
+[logger_kinto]
 level = DEBUG
 handlers =
-qualname = cliquet
+qualname = kinto
 
 [handler_console]
 class = StreamHandler
@@ -153,6 +153,6 @@ stdin, stdout, stderr = ssh.exec_command('PYTHONPATH=~/.local/ ~/.local/pip inst
 print(stdout.read(), stderr.read())
 stdin, stdout, stderr = ssh.exec_command('~/.local/bin/virtualenv kinto/venv/ --python=python2.7')
 print(stdout.read(), stderr.read())
-stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/pip install kinto cliquet[postgresql]')
+stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/pip install kinto[postgresql]')
 print(stdout.read(), stderr.read())
 ssh.close()
