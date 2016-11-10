@@ -12,6 +12,21 @@ ID_ALWAYSDATA = "AD_USERNAME"
 
 credentials = (LOGIN, PASSWORD)
 
+if ID_ALWAYSDATA is None:
+    response = requests.get("http://api.alwaysdata.com/v1/account/", auth=credentials)
+    try:
+        response.raise_for_status()
+        ID_ALWAYSDATA = response.json()[0]['name']
+    except requests.exceptions.HTTPError as error:
+        # The database may already exist.
+        if error.response.status_code != 400:
+            raise
+        else:
+            print("Database `%s` already exists." % "%s_kinto" % ID_ALWAYSDATA)
+    else:
+        print("Database `%s` created." % "%s_kinto" % ID_ALWAYSDATA)
+
+
 # CALCULATE VALUES
 settings = {
     'id_alwaysdata': ID_ALWAYSDATA,
