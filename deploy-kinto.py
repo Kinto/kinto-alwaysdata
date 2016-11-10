@@ -101,16 +101,15 @@ else:
 
 try:
     with open("kinto.fcgi", "rb") as f:
-        wsgi_content = f.read().format(id_alwaysdata=ID_ALWAYSDATA)
-        ftp.storbinary("STOR kinto/public/kinto.fcgi", StringIO(wsgi_content))
+        ftp.storbinary("STOR kinto/public/kinto.fcgi", f)
+        ftp.sendcmd('SITE CHMOD 755 kinto/public/kinto.fcgi')
 except ftplib.error_perm:
     print("A kinto.fcgi already exist.")
 else:
     print("A kinto.fcgi has been uploaded.")
 try:
     with open("htaccess", "rb") as f:
-        wsgi_content = f.read().format(id_alwaysdata=ID_ALWAYSDATA)
-        ftp.storbinary("STOR kinto/public/.htaccess", StringIO(wsgi_content))
+        ftp.storbinary("STOR kinto/public/.htaccess", f)
 except ftplib.error_perm:
     print("A .htaccess already exist.")
 else:
@@ -136,9 +135,4 @@ print(stdout.read(), stderr.read())
 # Run kinto migration to setup the database.
 stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/kinto --ini kinto/kinto.ini migrate')
 print(stdout.read(), stderr.read())
-
-# Configure a website.
-stdin, stdout, stderr = ssh.exec_command('chmod +x kinto/public/kinto.fcgi')
-print(stdout.read(), stderr.read())
-
 ssh.close()
