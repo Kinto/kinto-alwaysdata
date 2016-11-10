@@ -25,7 +25,15 @@ logging.config.fileConfig(ini_path)
 config = configparser.ConfigParser()
 config.read(ini_path)
 
+class ScriptNameStripper(object):
+   def __init__(self, app):
+       self.app = app
+
+   def __call__(self, environ, start_response):
+       environ['SCRIPT_NAME'] = ''
+       return self.app(environ, start_response)
+
 application = main(config.items('DEFAULT'), **dict(config.items('app:main')))
 
-server = WSGIServer(application)
+server = WSGIServer(ScriptNameStripper(application))
 server.run()

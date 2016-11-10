@@ -84,7 +84,10 @@ except ftplib.error_perm:
     pass
 try:
     with open("kinto.ini", "rb") as f:
-        ini_content = f.read().format(**settings)
+        ini_content = f.read().format(
+            bucket_id='{bucket_id}',
+            collection_id='{collection_id}',
+            **settings)
         ftp.storbinary("STOR kinto/kinto.ini", StringIO(ini_content))
 except ftplib.error_perm:
     print("A kinto config already exist.")
@@ -122,7 +125,7 @@ stdin, stdout, stderr = ssh.exec_command('PYTHONPATH=~/.local/ ~/.local/pip inst
 print(stdout.read(), stderr.read())
 stdin, stdout, stderr = ssh.exec_command('~/.local/bin/virtualenv kinto/venv/ --python=python2.7')
 print(stdout.read(), stderr.read())
-stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/pip install kinto[postgresql] flup')
+stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/pip install kinto[postgresql] kinto-attachment flup')
 print(stdout.read(), stderr.read())
 
 # Run kinto migration to setup the database.
