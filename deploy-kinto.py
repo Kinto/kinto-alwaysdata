@@ -57,25 +57,6 @@ except requests.exceptions.HTTPError as error:
 else:
         print("SSH User `%s` created." % "%s_kinto" % ID_ALWAYSDATA)
 
-# Create Apache Site
-response = requests.post("http://api.alwaysdata.com/v1/site/", json={
-    "name": "Kinto",
-    "type": "apache_standard",
-    "path": "/kinto/public/",
-    "ssl_force": True,
-    "addresses": ["%s.alwaysdata.net" % ID_ALWAYSDATA]
-}, auth=credentials)
-try:
-    response.raise_for_status()
-except requests.exceptions.HTTPError as error:
-    # The site may already exist.
-    if error.response.status_code != 400:
-        raise
-    else:
-        print("Site `%s` already exists." % "%s.alwaysdata.net" % ID_ALWAYSDATA)
-else:
-        print("Site `%s` created." % "%s.alwaysdata.net" % ID_ALWAYSDATA)
-
 # Copy the config
 ftp = ftplib.FTP(settings['ftp_host'], ID_ALWAYSDATA, PASSWORD)
 try:
@@ -84,10 +65,6 @@ except ftplib.error_perm:
     pass
 try:
     ftp.mkd("kinto")
-except ftplib.error_perm:
-    pass
-try:
-    ftp.mkd("kinto/public")
 except ftplib.error_perm:
     pass
 try:
@@ -101,15 +78,15 @@ else:
 
 try:
     with open("kinto.fcgi", "rb") as f:
-        ftp.storbinary("STOR kinto/public/kinto.fcgi", f)
-        ftp.sendcmd('SITE CHMOD 755 kinto/public/kinto.fcgi')
+        ftp.storbinary("STOR www/kinto.fcgi", f)
+        ftp.sendcmd('SITE CHMOD 755 www/kinto.fcgi')
 except ftplib.error_perm:
     print("A kinto.fcgi already exist.")
 else:
     print("A kinto.fcgi has been uploaded.")
 try:
     with open("htaccess", "rb") as f:
-        ftp.storbinary("STOR kinto/public/.htaccess", f)
+        ftp.storbinary("STOR www/.htaccess", f)
 except ftplib.error_perm:
     print("A .htaccess already exist.")
 else:
@@ -129,7 +106,7 @@ stdin, stdout, stderr = ssh.exec_command('PYTHONPATH=~/.local/ ~/.local/pip inst
 print(stdout.read(), stderr.read())
 stdin, stdout, stderr = ssh.exec_command('~/.local/bin/virtualenv kinto/venv/ --python=python2.7')
 print(stdout.read(), stderr.read())
-stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/pip install kinto[postgresql]')
+stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/pip install kinto[postgresql] flup')
 print(stdout.read(), stderr.read())
 
 # Run kinto migration to setup the database.
