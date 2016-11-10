@@ -41,72 +41,6 @@ except requests.exceptions.HTTPError as error:
 else:
         print("Database `%s` created." % "%s_kinto" % ID_ALWAYSDATA)
 
-# Build configuration
-config = """
-[app:main]
-use = egg:kinto
-
-pyramid.debug_notfound = false
-
-kinto.http_scheme = https
-kinto.http_host = https://%(id_alwaysdata)s.alwaysdata.net/
-
-kinto.project_name = kinto
-kinto.project_docs = https://kinto.readthedocs.io/
-
-#
-# Backends.
-#
-kinto.cache_backend = kinto.core.cache.postgresql
-kinto.cache_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
-
-kinto.storage_backend = kinto.core.storage.postgresql
-kinto.storage_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
-
-kinto.permission_backend = kinto.core.permission.postgresql
-kinto.permission_url = postgres://%(id_alwaysdata)s:%(password)s@%(postgresql_host)s/%(prefixed_username)s
-
-# kinto.backoff = 10
-kinto.batch_max_requests = 25
-# kinto.retry_after_seconds = 30
-# kinto.eos =
-
-#
-# Auth configuration.
-#
-kinto.userid_hmac_secret = %(hmac_secret)s
-multiauth.policies = basicauth
-
-[loggers]
-keys = root, kinto
-
-[handlers]
-keys = console
-
-[formatters]
-keys = generic
-
-[logger_root]
-level = INFO
-handlers = console
-
-[logger_kinto]
-level = DEBUG
-handlers =
-qualname = kinto
-
-[handler_console]
-class = StreamHandler
-args = (sys.stderr,)
-level = NOTSET
-formatter = generic
-
-[formatter_generic]
-format = %%(asctime)s %%(levelname)-5.5s [%%(name)s][%%(threadName)s] %%(message)s
-
-# End logging configuration
-""" % settings
-
 # Create ssh user
 response = requests.post("http://api.alwaysdata.com/v1/ssh/", json={
     "name": settings['prefixed_username'],
@@ -123,6 +57,25 @@ except requests.exceptions.HTTPError as error:
 else:
         print("SSH User `%s` created." % "%s_kinto" % ID_ALWAYSDATA)
 
+# Create Apache Site
+response = requests.post("http://api.alwaysdata.com/v1/site/", json={
+    "name": "Kinto",
+    "type": "apache_standard",
+    "path": "/kinto/public/",
+    "ssl_force": True,
+    "addresses": ["%s.alwaysdata.net" % ID_ALWAYSDATA]
+}, auth=credentials)
+try:
+    response.raise_for_status()
+except requests.exceptions.HTTPError as error:
+    # The site may already exist.
+    if error.response.status_code != 400:
+        raise
+    else:
+        print("Site `%s` already exists." % "%s.alwaysdata.net" % ID_ALWAYSDATA)
+else:
+        print("Site `%s` created." % "%s.alwaysdata.net" % ID_ALWAYSDATA)
+
 # Copy the config
 ftp = ftplib.FTP(settings['ftp_host'], ID_ALWAYSDATA, PASSWORD)
 try:
@@ -134,12 +87,36 @@ try:
 except ftplib.error_perm:
     pass
 try:
-    ftp.storbinary("STOR kinto/kinto.ini", StringIO(config))
+    ftp.mkd("kinto/public")
+except ftplib.error_perm:
+    pass
+try:
+    with open("kinto.ini", "rb") as f:
+        ini_content = f.read().format(**settings)
+        ftp.storbinary("STOR kinto/kinto.ini", StringIO(ini_content))
 except ftplib.error_perm:
     print("A kinto config already exist.")
 else:
     print("A kinto config has been uploaded.")
+
+try:
+    with open("kinto.fcgi", "rb") as f:
+        wsgi_content = f.read().format(id_alwaysdata=ID_ALWAYSDATA)
+        ftp.storbinary("STOR kinto/public/kinto.fcgi", StringIO(wsgi_content))
+except ftplib.error_perm:
+    print("A kinto.fcgi already exist.")
+else:
+    print("A kinto.fcgi has been uploaded.")
+try:
+    with open("htaccess", "rb") as f:
+        wsgi_content = f.read().format(id_alwaysdata=ID_ALWAYSDATA)
+        ftp.storbinary("STOR kinto/public/.htaccess", StringIO(wsgi_content))
+except ftplib.error_perm:
+    print("A .htaccess already exist.")
+else:
+    print("A .htaccess has been uploaded.")
 ftp.close()
+
 
 # Install kinto[postgresql]
 
@@ -155,4 +132,13 @@ stdin, stdout, stderr = ssh.exec_command('~/.local/bin/virtualenv kinto/venv/ --
 print(stdout.read(), stderr.read())
 stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/pip install kinto[postgresql]')
 print(stdout.read(), stderr.read())
+
+# Run kinto migration to setup the database.
+stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/kinto --ini kinto/kinto.ini migrate')
+print(stdout.read(), stderr.read())
+
+# Configure a website.
+stdin, stdout, stderr = ssh.exec_command('chmod +x kinto/public/kinto.fcgi')
+print(stdout.read(), stderr.read())
+
 ssh.close()
