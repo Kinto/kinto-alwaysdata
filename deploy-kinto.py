@@ -95,6 +95,7 @@ try:
     with open("kinto.fcgi", "rb") as f:
         ftp.storbinary("STOR www/kinto.fcgi", f)
         ftp.sendcmd('SITE CHMOD 755 www/kinto.fcgi')
+        ftp.delete('www/index.html')
 except ftplib.error_perm:
     print("A kinto.fcgi already exist.")
 else:
