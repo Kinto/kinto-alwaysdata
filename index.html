@@ -70,6 +70,19 @@
             $(document).ready(function() {
               $("#id_login").focus();
             });
+
+            var scrolled = false;
+            function updateScroll(){
+                if (!scrolled) {
+                    $('pre').scrollTop($('pre')[0].scrollHeight);
+                }
+            }
+
+            $("pre").on('scroll', function(){
+                scrolled = true;
+            });
+
+            setInterval(updateScroll, 1000);
         </script>
     </body>
 </html>
