@@ -45,6 +45,8 @@ type alias Progress =
     , ssh_user : Status
     , configuration : Status
     , ssh_commands : Status
+    , url : String
+    , logs : String
     }
 
 
@@ -60,7 +62,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    Model "" "" Nothing Nothing (Progress Unknown Unknown Unknown Unknown) "" ! []
+    Model "" "" Nothing Nothing (Progress Unknown Unknown Unknown Unknown "" "") "" ! []
 
 
 
@@ -145,11 +147,13 @@ statusDecoder =
 
 progressDecoder : Decode.Decoder Progress
 progressDecoder =
-    Decode.map4 Progress
-        (Decode.field "database" statusDecoder)
-        (Decode.field "ssh_user" statusDecoder)
-        (Decode.field "configuration" statusDecoder)
-        (Decode.field "ssh_commands" statusDecoder)
+    Decode.map6 Progress
+        (Decode.at [ "status", "database" ] statusDecoder)
+        (Decode.at [ "status", "ssh_user" ] statusDecoder)
+        (Decode.at [ "status", "configuration" ] statusDecoder)
+        (Decode.at [ "status", "ssh_commands" ] statusDecoder)
+        (Decode.field "url" Decode.string)
+        (Decode.field "logs" Decode.string)
 
 
 checkProgress : String -> Cmd Msg
@@ -160,7 +164,7 @@ checkProgress basicAuth =
             , headers = [ Http.header "Authorization" ("Basic " ++ basicAuth) ]
             , url = statusUrl
             , body = Http.emptyBody
-            , expect = Http.expectJson (Decode.field "status" progressDecoder)
+            , expect = Http.expectJson progressDecoder
             , timeout = Nothing
             , withCredentials = False
             }
@@ -347,13 +351,21 @@ viewProgress model =
             else
                 "Deploying Kinto, please wait"
 
-        adminLink =
+        links =
             if deployDone then
-                Html.a
-                    [ Html.Attributes.href
-                        "https://admin.alwaysdata.com/site/"
+                Html.div
+                    []
+                    [ Html.a
+                        [ Html.Attributes.href
+                            "https://admin.alwaysdata.com/site/"
+                        ]
+                        [ Html.text "Manage your kinto!" ]
+                    , Html.a
+                        [ Html.Attributes.href progress.url
+                        , Html.Attributes.style [ ( "float", "right" ) ]
+                        ]
+                        [ Html.text "Access your kinto!" ]
                     ]
-                    [ Html.text "Manage your kinto!" ]
             else
                 Html.text ""
 
@@ -375,8 +387,9 @@ viewProgress model =
                 , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
                 ]
                 [ body
-                , adminLink
+                , links
                 ]
+            , Html.pre [] [ Html.text progress.logs ]
             ]
 
 
