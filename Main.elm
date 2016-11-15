@@ -46,7 +46,7 @@ type alias Progress =
     , configuration : Status
     , ssh_commands : Status
     , url : String
-    , logs : String
+    , logs : Maybe String
     }
 
 
@@ -62,7 +62,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    Model "" "" Nothing Nothing (Progress Unknown Unknown Unknown Unknown "" "") "" ! []
+    Model "" "" Nothing Nothing (Progress Unknown Unknown Unknown Unknown "" Nothing) "" ! []
 
 
 
@@ -153,7 +153,7 @@ progressDecoder =
         (Decode.at [ "status", "configuration" ] statusDecoder)
         (Decode.at [ "status", "ssh_commands" ] statusDecoder)
         (Decode.field "url" Decode.string)
-        (Decode.field "logs" Decode.string)
+        (Decode.field "logs" (Decode.nullable Decode.string))
 
 
 checkProgress : String -> Cmd Msg
@@ -389,7 +389,9 @@ viewProgress model =
                 [ body
                 , links
                 ]
-            , Html.pre [] [ Html.text progress.logs ]
+            , Html.pre
+                [ Html.Attributes.style [ ( "max-height", "200px" ) ] ]
+                [ Html.text <| Maybe.withDefault "" progress.logs ]
             ]
 
 
