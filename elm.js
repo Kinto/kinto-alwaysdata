@@ -9028,59 +9028,107 @@ var _elm_lang$http$Http$StringPart = F2(
 	});
 var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
 
-var _user$project$Main$viewProgress = function (model) {
-	var body = function () {
-		var _p0 = model.progress;
-		if (_p0.ctor === 'Just') {
-			return _elm_lang$html$Html$text(
-				_elm_lang$core$Basics$toString(_p0._0));
-		} else {
-			return _elm_lang$html$Html$text('Deploying kinto, please wait...');
-		}
-	}();
-	return A2(
-		_elm_lang$html$Html$div,
-		{
-			ctor: '::',
-			_0: _elm_lang$html$Html_Attributes$class('login-holder'),
-			_1: {ctor: '[]'}
-		},
-		{
-			ctor: '::',
-			_0: A2(
-				_elm_lang$html$Html$h1,
-				{ctor: '[]'},
-				{
+var _user$project$Main$statusToGlyph = F2(
+	function (title, status) {
+		var glyph = function () {
+			var _p0 = status;
+			switch (_p0.ctor) {
+				case 'Unknown':
+					return 'fa-spinner fa-pulse';
+				case 'Created':
+					return 'fa-thumbs-up';
+				case 'Exists':
+					return 'fa-thumbs-up';
+				default:
+					return 'fa-thumbs-down';
+			}
+		}();
+		return A2(
+			_elm_lang$html$Html$li,
+			{ctor: '[]'},
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html$text(title),
+				_1: {
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Currently deploying Kinto'),
+					_0: A2(
+						_elm_lang$html$Html$i,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class(
+								A2(_elm_lang$core$Basics_ops['++'], 'fa fa-fw ', glyph)),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'float', _1: 'right'},
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						},
+						{ctor: '[]'}),
 					_1: {ctor: '[]'}
-				}),
-			_1: {
+				}
+			});
+	});
+var _user$project$Main$viewError = function (error) {
+	var _p1 = error;
+	if (_p1.ctor === 'Just') {
+		var _p2 = function () {
+			var _p3 = _p1._0;
+			if (_p3.ctor === 'BadStatus') {
+				return {ctor: '_Tuple2', _0: 'The form contains errors', _1: 'Your credentials are incorrect'};
+			} else {
+				return {ctor: '_Tuple2', _0: 'Server error', _1: 'Server unreachable'};
+			}
+		}();
+		var title = _p2._0;
+		var error = _p2._1;
+		return A2(
+			_elm_lang$html$Html$div,
+			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$class('errors'),
+				_1: {ctor: '[]'}
+			},
+			{
 				ctor: '::',
 				_0: A2(
-					_elm_lang$html$Html$div,
+					_elm_lang$html$Html$h3,
+					{ctor: '[]'},
 					{
 						ctor: '::',
-						_0: _elm_lang$html$Html_Attributes$class('well'),
-						_1: {
+						_0: _elm_lang$html$Html$text(title),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$ul,
+						{ctor: '[]'},
+						{
 							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$style(
+							_0: A2(
+								_elm_lang$html$Html$li,
+								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'background-color', _1: '#efefef'},
+									_0: _elm_lang$html$Html$text(error),
 									_1: {ctor: '[]'}
 								}),
 							_1: {ctor: '[]'}
-						}
-					},
-					{
-						ctor: '::',
-						_0: body,
-						_1: {ctor: '[]'}
-					}),
-				_1: {ctor: '[]'}
-			}
-		});
+						}),
+					_1: {ctor: '[]'}
+				}
+			});
+	} else {
+		return A2(
+			_elm_lang$html$Html$div,
+			{ctor: '[]'},
+			{ctor: '[]'});
+	}
 };
 var _user$project$Main$statusUrl = 'https://kinto-ota.dev.mozaws.net/status/';
 var _user$project$Main$deployUrl = 'https://kinto-ota.dev.mozaws.net/deploy/';
@@ -9090,45 +9138,19 @@ var _user$project$Main$b64encode = _elm_lang$core$Native_Platform.outgoingPort(
 		return v;
 	});
 var _user$project$Main$encoded = _elm_lang$core$Native_Platform.incomingPort('encoded', _elm_lang$core$Json_Decode$string);
+var _user$project$Main$Progress = F6(
+	function (a, b, c, d, e, f) {
+		return {database: a, ssh_user: b, configuration: c, ssh_commands: d, url: e, logs: f};
+	});
 var _user$project$Main$Model = F6(
 	function (a, b, c, d, e, f) {
 		return {email: a, password: b, deploySuccess: c, error: d, progress: e, encodedAuth: f};
 	});
-var _user$project$Main$init = A2(
-	_elm_lang$core$Platform_Cmd_ops['!'],
-	A6(_user$project$Main$Model, '', '', _elm_lang$core$Maybe$Nothing, _elm_lang$core$Maybe$Nothing, _elm_lang$core$Maybe$Nothing, ''),
-	{ctor: '[]'});
 var _user$project$Main$EncodedAuth = function (a) {
 	return {ctor: 'EncodedAuth', _0: a};
 };
 var _user$project$Main$UpdateProgress = function (a) {
 	return {ctor: 'UpdateProgress', _0: a};
-};
-var _user$project$Main$checkProgress = function (basicAuth) {
-	return A2(
-		_elm_lang$http$Http$send,
-		_user$project$Main$UpdateProgress,
-		_elm_lang$http$Http$request(
-			{
-				method: 'GET',
-				headers: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$http$Http$header,
-						'Authorization',
-						A2(_elm_lang$core$Basics_ops['++'], 'Basic ', basicAuth)),
-					_1: {ctor: '[]'}
-				},
-				url: _user$project$Main$statusUrl,
-				body: _elm_lang$http$Http$emptyBody,
-				expect: _elm_lang$http$Http$expectStringResponse(
-					function (_p1) {
-						var _p2 = _p1;
-						return _elm_lang$core$Result$Ok(_p2.body);
-					}),
-				timeout: _elm_lang$core$Maybe$Nothing,
-				withCredentials: false
-			}));
 };
 var _user$project$Main$CheckProgress = function (a) {
 	return {ctor: 'CheckProgress', _0: a};
@@ -9138,8 +9160,8 @@ var _user$project$Main$subscriptions = function (model) {
 		{
 			ctor: '::',
 			_0: function () {
-				var _p3 = model.deploySuccess;
-				if (_p3.ctor === 'Just') {
+				var _p4 = model.deploySuccess;
+				if (_p4.ctor === 'Just') {
 					return A2(_elm_lang$core$Time$every, 5 * _elm_lang$core$Time$second, _user$project$Main$CheckProgress);
 				} else {
 					return _elm_lang$core$Platform_Sub$none;
@@ -9173,138 +9195,14 @@ var _user$project$Main$postDeploy = function (basicAuth) {
 				url: _user$project$Main$deployUrl,
 				body: _elm_lang$http$Http$emptyBody,
 				expect: _elm_lang$http$Http$expectStringResponse(
-					function (_p4) {
-						var _p5 = _p4;
-						return _elm_lang$core$Result$Ok(_p5.body);
+					function (_p5) {
+						var _p6 = _p5;
+						return _elm_lang$core$Result$Ok(_p6.body);
 					}),
 				timeout: _elm_lang$core$Maybe$Nothing,
 				withCredentials: false
 			}));
 };
-var _user$project$Main$update = F2(
-	function (msg, model) {
-		var _p6 = msg;
-		switch (_p6.ctor) {
-			case 'EmailChange':
-				var _p7 = _p6._0;
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{email: _p7}),
-					{
-						ctor: '::',
-						_0: _user$project$Main$b64encode(
-							A2(
-								_elm_lang$core$String$join,
-								':',
-								{
-									ctor: '::',
-									_0: _p7,
-									_1: {
-										ctor: '::',
-										_0: model.password,
-										_1: {ctor: '[]'}
-									}
-								})),
-						_1: {ctor: '[]'}
-					});
-			case 'PasswordChange':
-				var _p8 = _p6._0;
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{password: _p8}),
-					{
-						ctor: '::',
-						_0: _user$project$Main$b64encode(
-							A2(
-								_elm_lang$core$String$join,
-								':',
-								{
-									ctor: '::',
-									_0: model.email,
-									_1: {
-										ctor: '::',
-										_0: _p8,
-										_1: {ctor: '[]'}
-									}
-								})),
-						_1: {ctor: '[]'}
-					});
-			case 'InstallKinto':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					model,
-					{
-						ctor: '::',
-						_0: _user$project$Main$postDeploy(model.encodedAuth),
-						_1: {ctor: '[]'}
-					});
-			case 'PostDeploy':
-				if (_p6._0.ctor === 'Ok') {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{
-								deploySuccess: _elm_lang$core$Maybe$Just(
-									_elm_lang$core$Basics$toString(_p6._0._0)),
-								error: _elm_lang$core$Maybe$Nothing
-							}),
-						{ctor: '[]'});
-				} else {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{
-								error: _elm_lang$core$Maybe$Just(
-									_elm_lang$core$Basics$toString(_p6._0._0)),
-								deploySuccess: _elm_lang$core$Maybe$Nothing
-							}),
-						{ctor: '[]'});
-				}
-			case 'CheckProgress':
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					model,
-					{
-						ctor: '::',
-						_0: _user$project$Main$checkProgress(model.encodedAuth),
-						_1: {ctor: '[]'}
-					});
-			case 'UpdateProgress':
-				if (_p6._0.ctor === 'Ok') {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{
-								progress: _elm_lang$core$Maybe$Just(_p6._0._0)
-							}),
-						{ctor: '[]'});
-				} else {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						_elm_lang$core$Native_Utils.update(
-							model,
-							{
-								error: _elm_lang$core$Maybe$Just(
-									_elm_lang$core$Basics$toString(_p6._0._0))
-							}),
-						{ctor: '[]'});
-				}
-			default:
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_elm_lang$core$Native_Utils.update(
-						model,
-						{encodedAuth: _p6._0}),
-					{ctor: '[]'});
-		}
-	});
 var _user$project$Main$InstallKinto = {ctor: 'InstallKinto'};
 var _user$project$Main$PasswordChange = function (a) {
 	return {ctor: 'PasswordChange', _0: a};
@@ -9350,90 +9248,14 @@ var _user$project$Main$viewForm = function (model) {
 					},
 					{
 						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$id('div_id_login'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$class('form-group'),
-									_1: {ctor: '[]'}
-								}
-							},
-							{
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$label,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$for('id_login'),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
-											_1: {ctor: '[]'}
-										}
-									},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text('Email'),
-										_1: {ctor: '[]'}
-									}),
-								_1: {
-									ctor: '::',
-									_0: A2(
-										_elm_lang$html$Html$div,
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('controls'),
-											_1: {ctor: '[]'}
-										},
-										{
-											ctor: '::',
-											_0: A2(
-												_elm_lang$html$Html$input,
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
-													_1: {
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$class('emailinput form-control'),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$id('id_login'),
-															_1: {
-																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$required(true),
-																_1: {
-																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$placeholder('username@alwaysdata.net'),
-																	_1: {
-																		ctor: '::',
-																		_0: _elm_lang$html$Html_Attributes$type_('email'),
-																		_1: {
-																			ctor: '::',
-																			_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$EmailChange),
-																			_1: {ctor: '[]'}
-																		}
-																	}
-																}
-															}
-														}
-													}
-												},
-												{ctor: '[]'}),
-											_1: {ctor: '[]'}
-										}),
-									_1: {ctor: '[]'}
-								}
-							}),
+						_0: _user$project$Main$viewError(model.error),
 						_1: {
 							ctor: '::',
 							_0: A2(
 								_elm_lang$html$Html$div,
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$id('div_id_password'),
+									_0: _elm_lang$html$Html_Attributes$id('div_id_login'),
 									_1: {
 										ctor: '::',
 										_0: _elm_lang$html$Html_Attributes$class('form-group'),
@@ -9446,7 +9268,7 @@ var _user$project$Main$viewForm = function (model) {
 										_elm_lang$html$Html$label,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$for('id_password'),
+											_0: _elm_lang$html$Html_Attributes$for('id_login'),
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
@@ -9455,7 +9277,7 @@ var _user$project$Main$viewForm = function (model) {
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Password'),
+											_0: _elm_lang$html$Html$text('Email'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
@@ -9473,20 +9295,28 @@ var _user$project$Main$viewForm = function (model) {
 													_elm_lang$html$Html$input,
 													{
 														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$class('textinput textInput form-control'),
+														_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
 														_1: {
 															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$id('id_password'),
+															_0: _elm_lang$html$Html_Attributes$class('emailinput form-control'),
 															_1: {
 																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$required(true),
+																_0: _elm_lang$html$Html_Attributes$id('id_login'),
 																_1: {
 																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$type_('password'),
+																	_0: _elm_lang$html$Html_Attributes$required(true),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PasswordChange),
-																		_1: {ctor: '[]'}
+																		_0: _elm_lang$html$Html_Attributes$placeholder('username@alwaysdata.net'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$type_('email'),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$EmailChange),
+																				_1: {ctor: '[]'}
+																			}
+																		}
 																	}
 																}
 															}
@@ -9498,7 +9328,79 @@ var _user$project$Main$viewForm = function (model) {
 										_1: {ctor: '[]'}
 									}
 								}),
-							_1: {ctor: '[]'}
+							_1: {
+								ctor: '::',
+								_0: A2(
+									_elm_lang$html$Html$div,
+									{
+										ctor: '::',
+										_0: _elm_lang$html$Html_Attributes$id('div_id_password'),
+										_1: {
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$class('form-group'),
+											_1: {ctor: '[]'}
+										}
+									},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$label,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$for('id_password'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Password'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$div,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('controls'),
+													_1: {ctor: '[]'}
+												},
+												{
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$input,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('textinput textInput form-control'),
+															_1: {
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$id('id_password'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$required(true),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$type_('password'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PasswordChange),
+																			_1: {ctor: '[]'}
+																		}
+																	}
+																}
+															}
+														},
+														{ctor: '[]'}),
+													_1: {ctor: '[]'}
+												}),
+											_1: {ctor: '[]'}
+										}
+									}),
+								_1: {ctor: '[]'}
+							}
 						}
 					}),
 				_1: {
@@ -9573,11 +9475,146 @@ var _user$project$Main$viewForm = function (model) {
 			}
 		});
 };
+var _user$project$Main$Error = {ctor: 'Error'};
+var _user$project$Main$Exists = {ctor: 'Exists'};
+var _user$project$Main$Created = {ctor: 'Created'};
+var _user$project$Main$viewProgress = function (model) {
+	var progress = model.progress;
+	var deployDone = _elm_lang$core$Native_Utils.eq(progress.ssh_commands, _user$project$Main$Created);
+	var title = deployDone ? 'Kinto has been deployed!' : 'Deploying Kinto, please wait';
+	var links = deployDone ? A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$a,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Attributes$href('https://admin.alwaysdata.com/site/'),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Manage your kinto!'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$a,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$href(progress.url),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'float', _1: 'right'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Access your kinto!'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			}
+		}) : _elm_lang$html$Html$text('');
+	var body = A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$ul,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: A2(_user$project$Main$statusToGlyph, 'Database: ', progress.database),
+					_1: {
+						ctor: '::',
+						_0: A2(_user$project$Main$statusToGlyph, 'SSH user: ', progress.ssh_user),
+						_1: {
+							ctor: '::',
+							_0: A2(_user$project$Main$statusToGlyph, 'Configuration: ', progress.configuration),
+							_1: {
+								ctor: '::',
+								_0: A2(_user$project$Main$statusToGlyph, 'SSH commands: ', progress.ssh_commands),
+								_1: {ctor: '[]'}
+							}
+						}
+					}
+				}),
+			_1: {ctor: '[]'}
+		});
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Attributes$class('login-holder'),
+			_1: {ctor: '[]'}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$h1,
+				{ctor: '[]'},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(title),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$div,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$class('well'),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'background-color', _1: '#efefef'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: body,
+						_1: {
+							ctor: '::',
+							_0: links,
+							_1: {ctor: '[]'}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$pre,
+						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text(progress.logs),
+							_1: {ctor: '[]'}
+						}),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
 var _user$project$Main$view = function (model) {
-	var error = A2(_elm_lang$core$Maybe$withDefault, '', model.error);
 	var body = function () {
-		var _p9 = model.deploySuccess;
-		if (_p9.ctor === 'Just') {
+		var _p7 = model.deploySuccess;
+		if (_p7.ctor === 'Just') {
 			return _user$project$Main$viewProgress(model);
 		} else {
 			return _user$project$Main$viewForm(model);
@@ -9589,64 +9626,230 @@ var _user$project$Main$view = function (model) {
 		{
 			ctor: '::',
 			_0: body,
-			_1: {
-				ctor: '::',
-				_0: A2(
-					_elm_lang$html$Html$hr,
-					{ctor: '[]'},
-					{ctor: '[]'}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$div,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$style(
-								{
-									ctor: '::',
-									_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'white'},
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text(error),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$hr,
-							{ctor: '[]'},
-							{ctor: '[]'}),
-						_1: {
-							ctor: '::',
-							_0: A2(
-								_elm_lang$html$Html$div,
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$style(
-										{
-											ctor: '::',
-											_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'white'},
-											_1: {ctor: '[]'}
-										}),
-									_1: {ctor: '[]'}
-								},
-								{
-									ctor: '::',
-									_0: _elm_lang$html$Html$text(
-										_elm_lang$core$Basics$toString(model)),
-									_1: {ctor: '[]'}
-								}),
-							_1: {ctor: '[]'}
-						}
-					}
-				}
-			}
+			_1: {ctor: '[]'}
 		});
 };
+var _user$project$Main$Unknown = {ctor: 'Unknown'};
+var _user$project$Main$init = A2(
+	_elm_lang$core$Platform_Cmd_ops['!'],
+	A6(
+		_user$project$Main$Model,
+		'',
+		'',
+		_elm_lang$core$Maybe$Nothing,
+		_elm_lang$core$Maybe$Nothing,
+		A6(_user$project$Main$Progress, _user$project$Main$Unknown, _user$project$Main$Unknown, _user$project$Main$Unknown, _user$project$Main$Unknown, '', ''),
+		''),
+	{ctor: '[]'});
+var _user$project$Main$stringToStatus = function (status) {
+	var _p8 = status;
+	switch (_p8) {
+		case 'unknown':
+			return _user$project$Main$Unknown;
+		case 'created':
+			return _user$project$Main$Created;
+		case 'exists':
+			return _user$project$Main$Exists;
+		default:
+			return _user$project$Main$Error;
+	}
+};
+var _user$project$Main$statusDecoder = A2(_elm_lang$core$Json_Decode$map, _user$project$Main$stringToStatus, _elm_lang$core$Json_Decode$string);
+var _user$project$Main$progressDecoder = A7(
+	_elm_lang$core$Json_Decode$map6,
+	_user$project$Main$Progress,
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'status',
+			_1: {
+				ctor: '::',
+				_0: 'database',
+				_1: {ctor: '[]'}
+			}
+		},
+		_user$project$Main$statusDecoder),
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'status',
+			_1: {
+				ctor: '::',
+				_0: 'ssh_user',
+				_1: {ctor: '[]'}
+			}
+		},
+		_user$project$Main$statusDecoder),
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'status',
+			_1: {
+				ctor: '::',
+				_0: 'configuration',
+				_1: {ctor: '[]'}
+			}
+		},
+		_user$project$Main$statusDecoder),
+	A2(
+		_elm_lang$core$Json_Decode$at,
+		{
+			ctor: '::',
+			_0: 'status',
+			_1: {
+				ctor: '::',
+				_0: 'ssh_commands',
+				_1: {ctor: '[]'}
+			}
+		},
+		_user$project$Main$statusDecoder),
+	A2(_elm_lang$core$Json_Decode$field, 'url', _elm_lang$core$Json_Decode$string),
+	A2(_elm_lang$core$Json_Decode$field, 'logs', _elm_lang$core$Json_Decode$string));
+var _user$project$Main$checkProgress = function (basicAuth) {
+	return A2(
+		_elm_lang$http$Http$send,
+		_user$project$Main$UpdateProgress,
+		_elm_lang$http$Http$request(
+			{
+				method: 'GET',
+				headers: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$http$Http$header,
+						'Authorization',
+						A2(_elm_lang$core$Basics_ops['++'], 'Basic ', basicAuth)),
+					_1: {ctor: '[]'}
+				},
+				url: _user$project$Main$statusUrl,
+				body: _elm_lang$http$Http$emptyBody,
+				expect: _elm_lang$http$Http$expectJson(_user$project$Main$progressDecoder),
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			}));
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p9 = msg;
+		switch (_p9.ctor) {
+			case 'EmailChange':
+				var _p10 = _p9._0;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{email: _p10}),
+					{
+						ctor: '::',
+						_0: _user$project$Main$b64encode(
+							A2(
+								_elm_lang$core$String$join,
+								':',
+								{
+									ctor: '::',
+									_0: _p10,
+									_1: {
+										ctor: '::',
+										_0: model.password,
+										_1: {ctor: '[]'}
+									}
+								})),
+						_1: {ctor: '[]'}
+					});
+			case 'PasswordChange':
+				var _p11 = _p9._0;
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{password: _p11}),
+					{
+						ctor: '::',
+						_0: _user$project$Main$b64encode(
+							A2(
+								_elm_lang$core$String$join,
+								':',
+								{
+									ctor: '::',
+									_0: model.email,
+									_1: {
+										ctor: '::',
+										_0: _p11,
+										_1: {ctor: '[]'}
+									}
+								})),
+						_1: {ctor: '[]'}
+					});
+			case 'InstallKinto':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{
+						ctor: '::',
+						_0: _user$project$Main$postDeploy(model.encodedAuth),
+						_1: {ctor: '[]'}
+					});
+			case 'PostDeploy':
+				if (_p9._0.ctor === 'Ok') {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								deploySuccess: _elm_lang$core$Maybe$Just(
+									_elm_lang$core$Basics$toString(_p9._0._0)),
+								error: _elm_lang$core$Maybe$Nothing
+							}),
+						{ctor: '[]'});
+				} else {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								error: _elm_lang$core$Maybe$Just(_p9._0._0),
+								deploySuccess: _elm_lang$core$Maybe$Nothing
+							}),
+						{ctor: '[]'});
+				}
+			case 'CheckProgress':
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					model,
+					{
+						ctor: '::',
+						_0: _user$project$Main$checkProgress(model.encodedAuth),
+						_1: {ctor: '[]'}
+					});
+			case 'UpdateProgress':
+				if (_p9._0.ctor === 'Ok') {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{progress: _p9._0._0}),
+						{ctor: '[]'});
+				} else {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						_elm_lang$core$Native_Utils.update(
+							model,
+							{
+								error: _elm_lang$core$Maybe$Just(_p9._0._0)
+							}),
+						{ctor: '[]'});
+				}
+			default:
+				return A2(
+					_elm_lang$core$Platform_Cmd_ops['!'],
+					_elm_lang$core$Native_Utils.update(
+						model,
+						{encodedAuth: _p9._0}),
+					{ctor: '[]'});
+		}
+	});
 var _user$project$Main$main = _elm_lang$html$Html$program(
 	{init: _user$project$Main$init, update: _user$project$Main$update, view: _user$project$Main$view, subscriptions: _user$project$Main$subscriptions})();
 
