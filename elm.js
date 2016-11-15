@@ -9212,11 +9212,15 @@ var _user$project$Main$EmailChange = function (a) {
 };
 var _user$project$Main$viewForm = function (model) {
 	return A2(
-		_elm_lang$html$Html$div,
+		_elm_lang$html$Html$form,
 		{
 			ctor: '::',
 			_0: _elm_lang$html$Html_Attributes$class('login-holder'),
-			_1: {ctor: '[]'}
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$action('#'),
+				_1: {ctor: '[]'}
+			}
 		},
 		{
 			ctor: '::',
