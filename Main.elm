@@ -11,12 +11,12 @@ import Time
 
 deployUrl : String
 deployUrl =
-    "http://192.168.1.97:8888/deploy/"
+    "https://kinto-ota.dev.mozaws.net/deploy/"
 
 
 statusUrl : String
 statusUrl =
-    "http://192.168.1.97:8888/status/"
+    "https://kinto-ota.dev.mozaws.net/status/"
 
 
 

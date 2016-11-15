@@ -13037,8 +13037,8 @@ var _user$project$Main$viewProgress = function (model) {
 			}
 		});
 };
-var _user$project$Main$statusUrl = 'http://192.168.1.97:8888/status/';
-var _user$project$Main$deployUrl = 'http://192.168.1.97:8888/deploy/';
+var _user$project$Main$statusUrl = 'https://kinto-ota.dev.mozaws.net/status/';
+var _user$project$Main$deployUrl = 'https://kinto-ota.dev.mozaws.net/deploy/';
 var _user$project$Main$b64encode = _elm_lang$core$Native_Platform.outgoingPort(
 	'b64encode',
 	function (v) {
