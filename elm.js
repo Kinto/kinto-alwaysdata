@@ -9603,7 +9603,8 @@ var _user$project$Main$viewProgress = function (model) {
 						{ctor: '[]'},
 						{
 							ctor: '::',
-							_0: _elm_lang$html$Html$text(progress.logs),
+							_0: _elm_lang$html$Html$text(
+								A2(_elm_lang$core$Maybe$withDefault, '', progress.logs)),
 							_1: {ctor: '[]'}
 						}),
 					_1: {ctor: '[]'}
@@ -9638,7 +9639,7 @@ var _user$project$Main$init = A2(
 		'',
 		_elm_lang$core$Maybe$Nothing,
 		_elm_lang$core$Maybe$Nothing,
-		A6(_user$project$Main$Progress, _user$project$Main$Unknown, _user$project$Main$Unknown, _user$project$Main$Unknown, _user$project$Main$Unknown, '', ''),
+		A6(_user$project$Main$Progress, _user$project$Main$Unknown, _user$project$Main$Unknown, _user$project$Main$Unknown, _user$project$Main$Unknown, '', _elm_lang$core$Maybe$Nothing),
 		''),
 	{ctor: '[]'});
 var _user$project$Main$stringToStatus = function (status) {
@@ -9707,7 +9708,10 @@ var _user$project$Main$progressDecoder = A7(
 		},
 		_user$project$Main$statusDecoder),
 	A2(_elm_lang$core$Json_Decode$field, 'url', _elm_lang$core$Json_Decode$string),
-	A2(_elm_lang$core$Json_Decode$field, 'logs', _elm_lang$core$Json_Decode$string));
+	A2(
+		_elm_lang$core$Json_Decode$field,
+		'logs',
+		_elm_lang$core$Json_Decode$nullable(_elm_lang$core$Json_Decode$string)));
 var _user$project$Main$checkProgress = function (basicAuth) {
 	return A2(
 		_elm_lang$http$Http$send,
