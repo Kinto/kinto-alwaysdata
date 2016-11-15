@@ -16,6 +16,7 @@ help:
 	@echo "  serve                       start the web server on default port (9999)"
 	@echo "  worker                      start the installer worker"
 	@echo "  web                         start the web interface"
+	@echo "  publish                     publish the web-ui on Github Pages"
 	@echo "  clean                       remove *.pyc files and __pycache__ directory"
 	@echo "  distclean                   remove *.egg-info files and *.egg, build and dist directories"
 	@echo "  maintainer-clean            remove the .tox and the .venv directories"
@@ -47,6 +48,9 @@ worker: install
 
 web:
 	cd web-ui; npm run start
+
+publish:
+	cd web-ui; npm run publish-to-gh-pages
 
 clean:
 	find . -name '*.pyc' -delete
