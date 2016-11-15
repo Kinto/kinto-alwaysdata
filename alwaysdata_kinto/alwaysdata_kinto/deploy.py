@@ -107,43 +107,36 @@ def create_ssh_user(id_alwaysdata, credentials, prefixed_username):
 def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, postgresql_host,
                                         prefixed_username, file_root):
     ftp = ftplib.FTP(ftp_host, id_alwaysdata, credentials[1])
-    try:
-        ftp.mkd(".local")
-    except ftplib.error_perm:
-        pass
 
-    try:
-        ftp.mkd("kinto")
-    except ftplib.error_perm:
-        pass
+    # Wait for the FTP account to be ready.
+    retry = 5
+    while retry > 0:
+        try:
+            ftp.login()
+        except ftplib.error_perm:
+            sleep(30)
+            retry -= 1
 
-    try:
-        with open(os.path.join(file_root, "kinto.ini"), "rb") as f:
-            ini_content = f.read().format(
-                bucket_id='{bucket_id}',
-                collection_id='{collection_id}',
-                id_alwaysdata=id_alwaysdata,
-                password=credentials[1],
-                postgresql_host=postgresql_host,
-                prefixed_username=prefixed_username,
-                hmac_secret=hashlib.sha256(':'.join(credentials)).hexdigest())
-            ftp.storbinary("STOR kinto/kinto.ini", StringIO(ini_content))
-    except ftplib.error_perm:
-        pass
+    ftp.mkd(".local")
+    ftp.mkd("kinto")
+    with open(os.path.join(file_root, "kinto.ini"), "rb") as f:
+        ini_content = f.read().format(
+            bucket_id='{bucket_id}',
+            collection_id='{collection_id}',
+            id_alwaysdata=id_alwaysdata,
+            password=credentials[1],
+            postgresql_host=postgresql_host,
+            prefixed_username=prefixed_username,
+            hmac_secret=hashlib.sha256(':'.join(credentials)).hexdigest())
+        ftp.storbinary("STOR kinto/kinto.ini", StringIO(ini_content))
 
-    try:
-        with open(os.path.join(file_root, "kinto.fcgi"), "rb") as f:
-            ftp.storbinary("STOR www/kinto.fcgi", f)
-            ftp.sendcmd('SITE CHMOD 755 www/kinto.fcgi')
-            ftp.delete('www/index.html')
-    except ftplib.error_perm:
-        pass
+    with open(os.path.join(file_root, "kinto.fcgi"), "rb") as f:
+        ftp.storbinary("STOR www/kinto.fcgi", f)
+        ftp.sendcmd('SITE CHMOD 755 www/kinto.fcgi')
+        ftp.delete('www/index.html')
 
-    try:
-        with open(os.path.join(file_root, "htaccess"), "rb") as f:
-            ftp.storbinary("STOR www/.htaccess", f)
-    except ftplib.error_perm:
-        pass
+    with open(os.path.join(file_root, "htaccess"), "rb") as f:
+        ftp.storbinary("STOR www/.htaccess", f)
     ftp.close()
 
 
