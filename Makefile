@@ -60,6 +60,7 @@ distclean: clean
 	rm -fr *.egg *.egg-info/ dist/ build/
 	rm -fr web-ui/build
 	rm -f  web-ui/elm.js
+	rm -fr web-ui/node_modules/gh-pages/.cache
 
 
 maintainer-clean: distclean
