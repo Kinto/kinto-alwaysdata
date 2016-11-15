@@ -9600,7 +9600,16 @@ var _user$project$Main$viewProgress = function (model) {
 					ctor: '::',
 					_0: A2(
 						_elm_lang$html$Html$pre,
-						{ctor: '[]'},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'max-height', _1: '200px'},
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						},
 						{
 							ctor: '::',
 							_0: _elm_lang$html$Html$text(
