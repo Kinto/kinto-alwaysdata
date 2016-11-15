@@ -26,7 +26,7 @@ install: $(INSTALL_STAMP)
 $(INSTALL_STAMP): $(PYTHON) alwaysdata_kinto/setup.py
 	$(VENV)/bin/pip install -U pip
 	$(VENV)/bin/pip install -Ue alwaysdata_kinto/
-    npm install
+	cd web-ui; npm install
 	touch $(INSTALL_STAMP)
 
 virtualenv: $(PYTHON)
@@ -46,7 +46,7 @@ worker: install
 	$(VENV)/bin/alwaysdata-kinto-worker --ini alwaysdata_kinto/alwaysdata_kinto.ini
 
 web:
-	npm run start
+	cd web-ui; npm run start
 
 clean:
 	find . -name '*.pyc' -delete
