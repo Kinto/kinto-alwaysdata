@@ -29,23 +29,38 @@ type Msg
     | InstallKinto
     | PostDeploy (Result Http.Error String)
     | CheckProgress Time.Time
-    | UpdateProgress (Result Http.Error String)
+    | UpdateProgress (Result Http.Error Progress)
     | EncodedAuth String
+
+
+type Status
+    = Unknown
+    | Created
+    | Exists
+    | Error
+
+
+type alias Progress =
+    { database : Status
+    , ssh_user : Status
+    , configuration : Status
+    , ssh_commands : Status
+    }
 
 
 type alias Model =
     { email : String
     , password : String
     , deploySuccess : Maybe String
-    , error : Maybe String
-    , progress : Maybe String
+    , error : Maybe Http.Error
+    , progress : Progress
     , encodedAuth : String
     }
 
 
 init : ( Model, Cmd Msg )
 init =
-    Model "" "" Nothing Nothing Nothing "" ! []
+    Model "" "" Nothing Nothing (Progress Unknown Unknown Unknown Unknown) "" ! []
 
 
 
@@ -75,7 +90,7 @@ update msg model =
 
         PostDeploy (Err error) ->
             { model
-                | error = Just <| toString error
+                | error = Just error
                 , deploySuccess = Nothing
             }
                 ! []
@@ -84,10 +99,10 @@ update msg model =
             model ! [ checkProgress model.encodedAuth ]
 
         UpdateProgress (Ok progress) ->
-            { model | progress = Just progress } ! []
+            { model | progress = progress } ! []
 
         UpdateProgress (Err error) ->
-            { model | error = Just <| toString error } ! []
+            { model | error = Just error } ! []
 
         EncodedAuth encoded ->
             { model | encodedAuth = encoded } ! []
@@ -107,6 +122,36 @@ postDeploy basicAuth =
             }
 
 
+stringToStatus : String -> Status
+stringToStatus status =
+    case status of
+        "unknown" ->
+            Unknown
+
+        "created" ->
+            Created
+
+        "exists" ->
+            Exists
+
+        _ ->
+            Error
+
+
+statusDecoder : Decode.Decoder Status
+statusDecoder =
+    Decode.map stringToStatus Decode.string
+
+
+progressDecoder : Decode.Decoder Progress
+progressDecoder =
+    Decode.map4 Progress
+        (Decode.field "database" statusDecoder)
+        (Decode.field "ssh_user" statusDecoder)
+        (Decode.field "configuration" statusDecoder)
+        (Decode.field "ssh_commands" statusDecoder)
+
+
 checkProgress : String -> Cmd Msg
 checkProgress basicAuth =
     Http.send UpdateProgress <|
@@ -115,7 +160,7 @@ checkProgress basicAuth =
             , headers = [ Http.header "Authorization" ("Basic " ++ basicAuth) ]
             , url = statusUrl
             , body = Http.emptyBody
-            , expect = Http.expectStringResponse (\{ body } -> Ok body)
+            , expect = Http.expectJson (Decode.field "status" progressDecoder)
             , timeout = Nothing
             , withCredentials = False
             }
@@ -152,22 +197,37 @@ view model =
 
                 Nothing ->
                     viewForm model
-
-        error =
-            Maybe.withDefault "" model.error
     in
         Html.div
             []
-            [ body
-            , Html.hr [] []
-            , Html.div
-                [ Html.Attributes.style [ ( "background-color", "white" ) ] ]
-                [ Html.text error ]
-            , Html.hr [] []
-            , Html.div
-                [ Html.Attributes.style [ ( "background-color", "white" ) ] ]
-                [ Html.text <| toString model ]
-            ]
+            [ body ]
+
+
+viewError : Maybe Http.Error -> Html.Html Msg
+viewError error =
+    case error of
+        Just err ->
+            let
+                ( title, error ) =
+                    case err of
+                        Http.BadStatus _ ->
+                            ( "The form contains errors"
+                            , "Your credentials are incorrect"
+                            )
+
+                        _ ->
+                            ( "Server error", "Server unreachable" )
+            in
+                Html.div
+                    [ Html.Attributes.class "errors" ]
+                    [ Html.h3 [] [ Html.text title ]
+                    , Html.ul
+                        []
+                        [ Html.li [] [ Html.text error ] ]
+                    ]
+
+        Nothing ->
+            Html.div [] []
 
 
 viewForm : Model -> Html.Html Msg
@@ -179,7 +239,8 @@ viewForm model =
             [ Html.Attributes.class "well"
             , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
             ]
-            [ Html.div
+            [ viewError model.error
+            , Html.div
                 [ Html.Attributes.id "div_id_login"
                 , Html.Attributes.class "form-group"
                 ]
@@ -244,25 +305,78 @@ viewForm model =
         ]
 
 
+statusToGlyph : String -> Status -> Html.Html Msg
+statusToGlyph title status =
+    let
+        glyph =
+            case status of
+                Unknown ->
+                    "fa-spinner fa-pulse"
+
+                Created ->
+                    "fa-thumbs-up"
+
+                Exists ->
+                    "fa-thumbs-up"
+
+                Error ->
+                    "fa-thumbs-down"
+    in
+        Html.li []
+            [ Html.text title
+            , Html.i
+                [ Html.Attributes.class <| "fa fa-fw " ++ glyph
+                , Html.Attributes.style [ ( "float", "right" ) ]
+                ]
+                []
+            ]
+
+
 viewProgress : Model -> Html.Html Msg
 viewProgress model =
     let
-        body =
-            case model.progress of
-                Just progress ->
-                    Html.text <| toString progress
+        progress =
+            model.progress
 
-                Nothing ->
-                    Html.text "Deploying kinto, please wait..."
+        deployDone =
+            progress.ssh_commands == Created
+
+        title =
+            if deployDone then
+                "Kinto has been deployed!"
+            else
+                "Deploying Kinto, please wait"
+
+        adminLink =
+            if deployDone then
+                Html.a
+                    [ Html.Attributes.href
+                        "https://admin.alwaysdata.com/site/"
+                    ]
+                    [ Html.text "Manage your kinto!" ]
+            else
+                Html.text ""
+
+        body =
+            Html.div []
+                [ Html.ul []
+                    [ statusToGlyph "Database: " progress.database
+                    , statusToGlyph "SSH user: " progress.ssh_user
+                    , statusToGlyph "Configuration: " progress.configuration
+                    , statusToGlyph "SSH commands: " progress.ssh_commands
+                    ]
+                ]
     in
         Html.div
             [ Html.Attributes.class "login-holder" ]
-            [ Html.h1 [] [ Html.text "Currently deploying Kinto" ]
+            [ Html.h1 [] [ Html.text title ]
             , Html.div
                 [ Html.Attributes.class "well"
                 , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
                 ]
-                [ body ]
+                [ body
+                , adminLink
+                ]
             ]
 
 
