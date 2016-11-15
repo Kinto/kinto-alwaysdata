@@ -58,11 +58,11 @@ clean:
 
 distclean: clean
 	rm -fr *.egg *.egg-info/ dist/ build/
-	rm -fr web-ui/node_modules
-	rm -fr web-ui/elm-stuff
 	rm -fr web-ui/build
 	rm -f  web-ui/elm.js
 
 
 maintainer-clean: distclean
 	rm -fr .venv/ .tox/
+	rm -fr web-ui/node_modules
+	rm -fr web-ui/elm-stuff
