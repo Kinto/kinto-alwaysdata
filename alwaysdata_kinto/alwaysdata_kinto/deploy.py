@@ -150,6 +150,7 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
 
     # Install pip
     retry = 5
+    error = None
     while retry > 0:
         try:
             stdin, stdout, stderr = ssh.exec_command(
@@ -157,11 +158,12 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
             )
             retry = 0
         except ssh_exception.AuthenticationException as e:
+            error = e
             sleep(30)
             retry -= 1
 
-    if retry == 0:
-        logs.write(e)
+    if retry == 0 and error is not None:
+        logs.write(error)
 
     logs.write(stdout.read())
     logs.write(stderr.read())
