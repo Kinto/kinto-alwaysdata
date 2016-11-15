@@ -9252,93 +9252,92 @@ var _user$project$Main$viewForm = function (model) {
 					},
 					{
 						ctor: '::',
-						_0: _user$project$Main$viewError(model.error),
+						_0: _elm_lang$html$Html$text('This will install kinto in the '),
 						_1: {
 							ctor: '::',
 							_0: A2(
-								_elm_lang$html$Html$div,
+								_elm_lang$html$Html$code,
+								{ctor: '[]'},
 								{
 									ctor: '::',
-									_0: _elm_lang$html$Html_Attributes$id('div_id_login'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$class('form-group'),
-										_1: {ctor: '[]'}
-									}
-								},
-								{
+									_0: _elm_lang$html$Html$text('/www/'),
+									_1: {ctor: '[]'}
+								}),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('directory of your account to make it run behind HTTPS on '),
+								_1: {
 									ctor: '::',
 									_0: A2(
-										_elm_lang$html$Html$label,
+										_elm_lang$html$Html$code,
+										{ctor: '[]'},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$for('id_login'),
-											_1: {
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
-												_1: {ctor: '[]'}
-											}
-										},
-										{
-											ctor: '::',
-											_0: _elm_lang$html$Html$text('Email'),
+											_0: _elm_lang$html$Html$text('<username>.alwaysdata.net'),
 											_1: {ctor: '[]'}
 										}),
 									_1: {
 										ctor: '::',
 										_0: A2(
-											_elm_lang$html$Html$div,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('controls'),
-												_1: {ctor: '[]'}
-											},
-											{
+											_elm_lang$html$Html$br,
+											{ctor: '[]'},
+											{ctor: '[]'}),
+										_1: {
+											ctor: '::',
+											_0: A2(
+												_elm_lang$html$Html$b,
+												{ctor: '[]'},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Make sure to save its content first.'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
 												ctor: '::',
 												_0: A2(
-													_elm_lang$html$Html$input,
-													{
-														ctor: '::',
-														_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
-														_1: {
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$class('emailinput form-control'),
-															_1: {
-																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$id('id_login'),
-																_1: {
-																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$required(true),
-																	_1: {
-																		ctor: '::',
-																		_0: _elm_lang$html$Html_Attributes$placeholder('username@alwaysdata.net'),
-																		_1: {
-																			ctor: '::',
-																			_0: _elm_lang$html$Html_Attributes$type_('email'),
-																			_1: {
-																				ctor: '::',
-																				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$EmailChange),
-																				_1: {ctor: '[]'}
-																			}
-																		}
-																	}
-																}
-															}
-														}
-													},
+													_elm_lang$html$Html$br,
+													{ctor: '[]'},
 													{ctor: '[]'}),
-												_1: {ctor: '[]'}
-											}),
-										_1: {ctor: '[]'}
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('It will create a PostgreSQL database and a SSH user.'),
+													_1: {ctor: '[]'}
+												}
+											}
+										}
 									}
-								}),
+								}
+							}
+						}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$div,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$class('well'),
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$style(
+									{
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'background-color', _1: '#efefef'},
+										_1: {ctor: '[]'}
+									}),
+								_1: {ctor: '[]'}
+							}
+						},
+						{
+							ctor: '::',
+							_0: _user$project$Main$viewError(model.error),
 							_1: {
 								ctor: '::',
 								_0: A2(
 									_elm_lang$html$Html$div,
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$id('div_id_password'),
+										_0: _elm_lang$html$Html_Attributes$id('div_id_login'),
 										_1: {
 											ctor: '::',
 											_0: _elm_lang$html$Html_Attributes$class('form-group'),
@@ -9351,7 +9350,7 @@ var _user$project$Main$viewForm = function (model) {
 											_elm_lang$html$Html$label,
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$for('id_password'),
+												_0: _elm_lang$html$Html_Attributes$for('id_login'),
 												_1: {
 													ctor: '::',
 													_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
@@ -9360,7 +9359,7 @@ var _user$project$Main$viewForm = function (model) {
 											},
 											{
 												ctor: '::',
-												_0: _elm_lang$html$Html$text('Password'),
+												_0: _elm_lang$html$Html$text('Email'),
 												_1: {ctor: '[]'}
 											}),
 										_1: {
@@ -9378,20 +9377,28 @@ var _user$project$Main$viewForm = function (model) {
 														_elm_lang$html$Html$input,
 														{
 															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$class('textinput textInput form-control'),
+															_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
 															_1: {
 																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$id('id_password'),
+																_0: _elm_lang$html$Html_Attributes$class('emailinput form-control'),
 																_1: {
 																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$required(true),
+																	_0: _elm_lang$html$Html_Attributes$id('id_login'),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Attributes$type_('password'),
+																		_0: _elm_lang$html$Html_Attributes$required(true),
 																		_1: {
 																			ctor: '::',
-																			_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PasswordChange),
-																			_1: {ctor: '[]'}
+																			_0: _elm_lang$html$Html_Attributes$placeholder('username@alwaysdata.net'),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Attributes$type_('email'),
+																				_1: {
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$EmailChange),
+																					_1: {ctor: '[]'}
+																				}
+																			}
 																		}
 																	}
 																}
@@ -9403,77 +9410,149 @@ var _user$project$Main$viewForm = function (model) {
 											_1: {ctor: '[]'}
 										}
 									}),
-								_1: {ctor: '[]'}
-							}
-						}
-					}),
-				_1: {
-					ctor: '::',
-					_0: A2(
-						_elm_lang$html$Html$button,
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html_Attributes$type_('submit'),
-							_1: {
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('btn btn-default'),
-								_1: {
-									ctor: '::',
-									_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$InstallKinto),
-									_1: {ctor: '[]'}
-								}
-							}
-						},
-						{
-							ctor: '::',
-							_0: _elm_lang$html$Html$text('Deploy my kinto!'),
-							_1: {ctor: '[]'}
-						}),
-					_1: {
-						ctor: '::',
-						_0: A2(
-							_elm_lang$html$Html$div,
-							{
-								ctor: '::',
-								_0: _elm_lang$html$Html_Attributes$class('footer-links'),
-								_1: {ctor: '[]'}
-							},
-							{
-								ctor: '::',
-								_0: A2(
-									_elm_lang$html$Html$a,
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$href('https://admin.alwaysdata.com/password/lost/'),
-										_1: {ctor: '[]'}
-									},
-									{
-										ctor: '::',
-										_0: _elm_lang$html$Html$text('Password forgotten?'),
-										_1: {ctor: '[]'}
-									}),
 								_1: {
 									ctor: '::',
 									_0: A2(
-										_elm_lang$html$Html$a,
+										_elm_lang$html$Html$div,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$href('https://www.alwaysdata.com/signup/'),
+											_0: _elm_lang$html$Html_Attributes$id('div_id_password'),
 											_1: {
 												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$class('align-r'),
+												_0: _elm_lang$html$Html_Attributes$class('form-group'),
 												_1: {ctor: '[]'}
 											}
 										},
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html$text('Register'),
-											_1: {ctor: '[]'}
+											_0: A2(
+												_elm_lang$html$Html$label,
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$for('id_password'),
+													_1: {
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
+														_1: {ctor: '[]'}
+													}
+												},
+												{
+													ctor: '::',
+													_0: _elm_lang$html$Html$text('Password'),
+													_1: {ctor: '[]'}
+												}),
+											_1: {
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$div,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$class('controls'),
+														_1: {ctor: '[]'}
+													},
+													{
+														ctor: '::',
+														_0: A2(
+															_elm_lang$html$Html$input,
+															{
+																ctor: '::',
+																_0: _elm_lang$html$Html_Attributes$class('textinput textInput form-control'),
+																_1: {
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$id('id_password'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$required(true),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$type_('password'),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PasswordChange),
+																				_1: {ctor: '[]'}
+																			}
+																		}
+																	}
+																}
+															},
+															{ctor: '[]'}),
+														_1: {ctor: '[]'}
+													}),
+												_1: {ctor: '[]'}
+											}
 										}),
 									_1: {ctor: '[]'}
 								}
+							}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$button,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$type_('submit'),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('btn btn-default'),
+									_1: {
+										ctor: '::',
+										_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$InstallKinto),
+										_1: {ctor: '[]'}
+									}
+								}
+							},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text('Deploy my kinto!'),
+								_1: {ctor: '[]'}
 							}),
-						_1: {ctor: '[]'}
+						_1: {
+							ctor: '::',
+							_0: A2(
+								_elm_lang$html$Html$div,
+								{
+									ctor: '::',
+									_0: _elm_lang$html$Html_Attributes$class('footer-links'),
+									_1: {ctor: '[]'}
+								},
+								{
+									ctor: '::',
+									_0: A2(
+										_elm_lang$html$Html$a,
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html_Attributes$href('https://admin.alwaysdata.com/password/lost/'),
+											_1: {ctor: '[]'}
+										},
+										{
+											ctor: '::',
+											_0: _elm_lang$html$Html$text('Password forgotten?'),
+											_1: {ctor: '[]'}
+										}),
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$a,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$href('https://www.alwaysdata.com/signup/'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('align-r'),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html$text('Register'),
+												_1: {ctor: '[]'}
+											}),
+										_1: {ctor: '[]'}
+									}
+								}),
+							_1: {ctor: '[]'}
+						}
 					}
 				}
 			}
