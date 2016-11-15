@@ -14,6 +14,8 @@ help:
 	@echo "Please use 'make <target>' where <target> is one of"
 	@echo "  install                     install dependencies and prepare environment"
 	@echo "  serve                       start the web server on default port (9999)"
+	@echo "  worker                      start the installer worker"
+	@echo "  web                         start the web interface"
 	@echo "  clean                       remove *.pyc files and __pycache__ directory"
 	@echo "  distclean                   remove *.egg-info files and *.egg, build and dist directories"
 	@echo "  maintainer-clean            remove the .tox and the .venv directories"
@@ -44,7 +46,7 @@ worker: install
 	$(VENV)/bin/alwaysdata-kinto-worker --ini alwaysdata_kinto/alwaysdata_kinto.ini
 
 web:
-	npm run live
+	npm run start
 
 clean:
 	find . -name '*.pyc' -delete
