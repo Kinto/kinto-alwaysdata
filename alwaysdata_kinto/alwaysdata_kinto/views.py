@@ -28,8 +28,9 @@ def deploy_info(request):
     # Get Authorization header
     try:
         authorization = request.headers['Authorization'].split(' ', 1)[1]
-    except KeyError:
+    except (KeyError, IndexError):
         response.status_code = 401
+        return
 
     # Check that we can use the header to authenticate
     api_response = requests.get(API_BASE_URL.format('/account/'),
@@ -60,8 +61,9 @@ def get_deployment_info(request):
     # 1. Get Authorization header
     try:
         authorization = request.headers['Authorization'].split(' ', 1)[1]
-    except KeyError:
+    except (KeyError, IndexError):
         response.status_code = 401
+        return
 
     # Build a offuscated user_id
     user_id = hmac_digest(request.registry.hmac_secret, authorization)
