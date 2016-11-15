@@ -238,8 +238,22 @@ viewForm : Model -> Html.Html Msg
 viewForm model =
     Html.form
         [ Html.Attributes.class "login-holder"
-        , Html.Attributes.action "#" ]
+        , Html.Attributes.action "#"
+        ]
         [ Html.h1 [] [ Html.text "Login and deploy Kinto" ]
+        , Html.div
+            [ Html.Attributes.class "well"
+            , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
+            ]
+            [ Html.text "This will install kinto in the "
+            , Html.code [] [ Html.text "/www/" ]
+            , Html.text "directory of your account to make it run behind HTTPS on "
+            , Html.code [] [ Html.text "<username>.alwaysdata.net" ]
+            , Html.br [] []
+            , Html.b [] [ Html.text "Make sure to save its content first." ]
+            , Html.br [] []
+            , Html.text "It will create a PostgreSQL database and a SSH user."
+            ]
         , Html.div
             [ Html.Attributes.class "well"
             , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
