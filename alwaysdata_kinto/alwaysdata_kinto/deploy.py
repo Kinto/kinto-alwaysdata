@@ -109,12 +109,12 @@ def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, po
     ftp = ftplib.FTP(ftp_host, id_alwaysdata, credentials[1])
 
     # Wait for the FTP account to be ready.
-    retry = 5
+    retry = 30
     while retry > 0:
         try:
             ftp.login()
         except ftplib.error_perm:
-            sleep(30)
+            sleep(5)
             retry -= 1
 
     ftp.mkd(".local")
@@ -149,7 +149,7 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
     ssh.connect(ssh_host, username=prefixed_username, password=credentials[1], look_for_keys=False)
 
     # Install pip
-    retry = 5
+    retry = 30
     error = None
     while retry > 0:
         try:
@@ -159,7 +159,7 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
             retry = 0
         except ssh_exception.AuthenticationException as e:
             error = e
-            sleep(30)
+            sleep(5)
             retry -= 1
 
     if retry == 0 and error is not None:
