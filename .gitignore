@@ -1,3 +1,5 @@
 venv/
 node_modules/
 elm-stuff/
+build/
+elm.js
