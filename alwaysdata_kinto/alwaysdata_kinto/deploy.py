@@ -108,15 +108,6 @@ def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, po
                                         prefixed_username, file_root):
     ftp = ftplib.FTP(ftp_host, id_alwaysdata, credentials[1])
 
-    # Wait for the FTP account to be ready.
-    retry = 30
-    while retry > 0:
-        try:
-            ftp.login()
-        except ftplib.error_perm:
-            sleep(5)
-            retry -= 1
-
     try:
         ftp.mkd(".local")
     except ftplib.error_perm:
@@ -139,7 +130,10 @@ def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, po
     with open(os.path.join(file_root, "kinto.fcgi"), "rb") as f:
         ftp.storbinary("STOR www/kinto.fcgi", f)
         ftp.sendcmd('SITE CHMOD 755 www/kinto.fcgi')
-        ftp.delete('www/index.html')
+        try:
+            ftp.delete('www/index.html')
+        except ftplib.error_perm:
+            pass
 
     with open(os.path.join(file_root, "htaccess"), "rb") as f:
         ftp.storbinary("STOR www/.htaccess", f)
