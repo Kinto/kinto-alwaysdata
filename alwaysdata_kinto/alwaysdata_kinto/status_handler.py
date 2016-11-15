@@ -25,12 +25,12 @@ class RedisStatusHandler(object):
     def __setattr__(self, key, value):
         if key in KEYS:
             self.statuses[key] = value
-            self.redis_client.set(STATUS_KEY.format(self.user_id), json.dumps(self.statuses))
+            self.redis_client.set(STATUS_KEY.format(self.user_id), json.dumps(self.statuses), 3600)
             return
 
         if key == "ssh_logs":
             self.logs = value
-            self.redis_client.set(LOGS_KEY.format(self.user_id), self.logs.getvalue())
+            self.redis_client.set(LOGS_KEY.format(self.user_id), self.logs.getvalue(), 3600)
             return
 
         super(RedisStatusHandler, self).__setattr__(key, value)

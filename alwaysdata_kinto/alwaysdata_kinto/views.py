@@ -48,7 +48,7 @@ def deploy_info(request):
     # 3. Add the header to a queue
     r = get_redis_client(**request.registry.redis)
     r.delete(STATUS_KEY.format(user_id), LOGS_KEY.format(user_id))
-    r.set(ID_ALWAYSDATA_KEY.format(user_id), id_alwaysdata)
+    r.set(ID_ALWAYSDATA_KEY.format(user_id), id_alwaysdata, 3600)
     r.rpush(DEPLOY_QUEUE, authorization)
     response.status_code = 202
     return response
