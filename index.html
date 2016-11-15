@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Deploy Kinto to Alwaysdata</title>
+        <link rel="icon" type="image/png" href="static/favicon.png">
+        <link rel="stylesheet" href="static/bootstrap.css">
+        <link rel="stylesheet" href="static/font-awesome.css">
+        <link rel="stylesheet" href="static/c837ab8b5de4.css" type="text/css" media="all">
+        <link href="static/css_002.css" rel="stylesheet" type="text/css">
+        <link href="static/css.css" rel="stylesheet" type="text/css">
+    </head>
+    <body>
+        <div id="wrapper">
+            <header id="header" class="navbar navbar-inverse header-static">
+                <div class="bar">
+                    <div class="container">
+                        <nav class="collapse navbar-collapse bs-navbar-collapse" role="navigation">
+                            <ul class="nav navbar-nav">
+                                <li class="active">
+                                    <a href="https://admin.alwaysdata.com/" title="Administration">
+                                        admin
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://www.kinto-storage.org/" title="Kinto">
+                                        kinto
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://help.alwaysdata.com/" title="Help">
+                                        help
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="https://status.alwaysdata.com/" title="Status">
+                                        status
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </header>
+        </div>
+
+        <div class="login-modal">
+            <div class="header">
+                <a class="navbar-brand" href="">kinto</a>
+            </div>
+            <div id="elm">
+            </div>
+        </div>
+        <script src="static/jquery.js"></script>
+        <script src="static/bootstrap.js"></script>
+        <!--[if IE]><script type="text/javascript" src="static/ie.js"></script><![endif]-->
+
+        <script src="elm.js"></script>
+        <script>
+          var node = document.getElementById("elm");
+          var app = Elm.Main.embed(node);
+          app.ports.b64encode.subscribe(function(str) {
+            console.log("encoding: ", str);
+            app.ports.encoded.send(btoa(str));
+          });
+        </script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {
+              $("#id_login").focus();
+            });
+        </script>
+    </body>
+</html>
