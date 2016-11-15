@@ -117,8 +117,14 @@ def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, po
             sleep(5)
             retry -= 1
 
-    ftp.mkd(".local")
-    ftp.mkd("kinto")
+    try:
+        ftp.mkd(".local")
+    except ftplib.error_perm:
+        pass
+    try:
+        ftp.mkd("kinto")
+    except ftplib.error_perm:
+        pass
     with open(os.path.join(file_root, "kinto.ini"), "rb") as f:
         ini_content = f.read().format(
             bucket_id='{bucket_id}',
