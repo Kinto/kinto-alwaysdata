@@ -14,6 +14,7 @@ from .deploy import deploy_kinto_to_alwaysdata
 from .status_handler import RedisStatusHandler
 from .utils import hmac_digest
 
+logger = logging.getLogger("worker")
 
 FILE_ROOT = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_LOG_LEVEL = logging.INFO
@@ -60,4 +61,9 @@ def main(args=None):
 
         status_handler = RedisStatusHandler(r, user_id)
 
-        deploy_kinto_to_alwaysdata(status_handler, file_root=FILE_ROOT, **settings)
+        try:
+            deploy_kinto_to_alwaysdata(status_handler, file_root=FILE_ROOT, **settings)
+        except Exception as e:
+            logger.error(e)
+            # Retry later
+            r.rpush(b64_credentials)

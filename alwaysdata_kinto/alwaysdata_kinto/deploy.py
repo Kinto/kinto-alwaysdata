@@ -5,8 +5,10 @@ import logging
 import os
 import requests
 
+from paramiko import ssh_exception
 from paramiko.client import SSHClient, AutoAddPolicy
 from six import StringIO
+from time import sleep
 
 from .constants import API_BASE_URL, STATUS
 from .exceptions import KintoDeployException, DatabaseAlreadyExists, SSHUserAlreadyExists
@@ -154,9 +156,17 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
     ssh.connect(ssh_host, username=prefixed_username, password=credentials[1], look_for_keys=False)
 
     # Install pip
-    stdin, stdout, stderr = ssh.exec_command(
-        'PYTHONPATH=~/.local/ easy_install-2.6 --install-dir=~/.local -U pip'
-    )
+    retry = 5
+    while retry > 0:
+        try:
+            stdin, stdout, stderr = ssh.exec_command(
+                'PYTHONPATH=~/.local/ easy_install-2.6 --install-dir=~/.local -U pip'
+            )
+            retry = 0
+        except ssh_exception.AuthenticationException:
+            sleep(10)
+            retry -= 1
+
     logs.write(stdout.read())
     logs.write(stderr.read())
     status_handler.ssh_logs = logs
