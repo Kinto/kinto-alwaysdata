@@ -71,6 +71,10 @@ def deploy_kinto_to_alwaysdata(status_handler, id_alwaysdata, credentials, prefi
         logger.info("Kinto installed: https://%s.alwaysdata.net/v1/" % id_alwaysdata)
         status_handler.ssh_commands = STATUS.CREATED
 
+        logs = StringIO()
+        logs.write("Kinto installed: https://%s.alwaysdata.net/v1/\n" % id_alwaysdata)
+        status_handler.ssh_logs = logs
+
 
 def create_postgresql_database(id_alwaysdata, credentials, prefixed_username):
     response = requests.post(API_BASE_URL.format("/database/"), json={
@@ -145,7 +149,8 @@ def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, po
     ftp.close()
 
 
-def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_username, status_handler):
+def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_username,
+                           status_handler):
     logs = StringIO()
     # SSH Login
     ssh = SSHClient()
