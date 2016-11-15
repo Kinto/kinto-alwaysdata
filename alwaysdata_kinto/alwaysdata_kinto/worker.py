@@ -66,4 +66,4 @@ def main(args=None):
         except Exception as e:
             logger.error(e)
             # Retry later
-            r.rpush(b64_credentials)
+            r.rpush(DEPLOY_QUEUE, b64_credentials)

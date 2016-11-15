@@ -163,9 +163,12 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
                 'PYTHONPATH=~/.local/ easy_install-2.6 --install-dir=~/.local -U pip'
             )
             retry = 0
-        except ssh_exception.AuthenticationException:
-            sleep(10)
+        except ssh_exception.AuthenticationException as e:
+            sleep(30)
             retry -= 1
+
+    if retry == 0:
+        logs.write(e)
 
     logs.write(stdout.read())
     logs.write(stderr.read())
