@@ -71,8 +71,9 @@ def get_deployment_info(request):
     r = get_redis_client(**request.registry.redis)
     status = r.get(STATUS_KEY.format(user_id))
     logs = r.get(LOGS_KEY.format(user_id))
+    url = "https://{}.alwaysdata.net/v1/".format(r.get(ID_ALWAYSDATA_KEY.format(user_id)))
 
     if status is None and logs is None:
         response.status_code = 404
 
-    return {"status": json.loads(status), "logs": logs}
+    return {"status": json.loads(status), "logs": logs, "url": url}
