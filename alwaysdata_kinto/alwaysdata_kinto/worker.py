@@ -39,7 +39,11 @@ def main(args=None):
     r = StrictRedis(**registry.redis)
 
     while True:
-        queue, b64_credentials = r.blpop(DEPLOY_QUEUE, 0)
+        try:
+            queue, b64_credentials = r.blpop(DEPLOY_QUEUE, 0)
+        except KeyboardInterrupt:
+            print("\rBye bye buddy")
+            sys.exit(0)
         user_id = hmac_digest(registry.hmac_secret, b64_credentials)
         credentials = base64.b64decode(b64_credentials).split(':', 1)
 
