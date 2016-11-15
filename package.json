@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "node_modules/.bin/elm-make Main.elm --output=elm.js",
-    "start": "node_modules/.bin/elm-reactor Main.elm",
-    "live": "node_modules/.bin/elm-live Main.elm --output=elm.js -- --debug",
+    "start": "node_modules/.bin/elm-live Main.elm --output=elm.js --open",
+    "debug": "node_modules/.bin/elm-live Main.elm --output=elm.js --open -- --debug",
     "publish-to-gh-pages": "rm -rf build/ && mkdir -p build/ && npm run build && cp index.html build/ && cp elm.js build/ && cp -r static build/ && node_modules/.bin/gh-pages --dist build/"
   },
   "repository": {
