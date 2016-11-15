@@ -236,8 +236,9 @@ viewError error =
 
 viewForm : Model -> Html.Html Msg
 viewForm model =
-    Html.div
-        [ Html.Attributes.class "login-holder" ]
+    Html.form
+        [ Html.Attributes.class "login-holder"
+        , Html.Attributes.action "#" ]
         [ Html.h1 [] [ Html.text "Login and deploy Kinto" ]
         , Html.div
             [ Html.Attributes.class "well"
