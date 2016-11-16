@@ -9229,7 +9229,7 @@ var _user$project$Main$viewForm = function (model) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Login and deploy Kinto'),
+					_0: _elm_lang$html$Html$text('Deploy Kinto to Alwaysdata'),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -9334,81 +9334,12 @@ var _user$project$Main$viewForm = function (model) {
 							_1: {
 								ctor: '::',
 								_0: A2(
-									_elm_lang$html$Html$div,
+									_elm_lang$html$Html$h4,
+									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html_Attributes$id('div_id_login'),
-										_1: {
-											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$class('form-group'),
-											_1: {ctor: '[]'}
-										}
-									},
-									{
-										ctor: '::',
-										_0: A2(
-											_elm_lang$html$Html$label,
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html_Attributes$for('id_login'),
-												_1: {
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
-													_1: {ctor: '[]'}
-												}
-											},
-											{
-												ctor: '::',
-												_0: _elm_lang$html$Html$text('Email'),
-												_1: {ctor: '[]'}
-											}),
-										_1: {
-											ctor: '::',
-											_0: A2(
-												_elm_lang$html$Html$div,
-												{
-													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$class('controls'),
-													_1: {ctor: '[]'}
-												},
-												{
-													ctor: '::',
-													_0: A2(
-														_elm_lang$html$Html$input,
-														{
-															ctor: '::',
-															_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
-															_1: {
-																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$class('emailinput form-control'),
-																_1: {
-																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$id('id_login'),
-																	_1: {
-																		ctor: '::',
-																		_0: _elm_lang$html$Html_Attributes$required(true),
-																		_1: {
-																			ctor: '::',
-																			_0: _elm_lang$html$Html_Attributes$placeholder('username@alwaysdata.net'),
-																			_1: {
-																				ctor: '::',
-																				_0: _elm_lang$html$Html_Attributes$type_('email'),
-																				_1: {
-																					ctor: '::',
-																					_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$EmailChange),
-																					_1: {ctor: '[]'}
-																				}
-																			}
-																		}
-																	}
-																}
-															}
-														},
-														{ctor: '[]'}),
-													_1: {ctor: '[]'}
-												}),
-											_1: {ctor: '[]'}
-										}
+										_0: _elm_lang$html$Html$text('Enter your Alwaysdata credentials below:'),
+										_1: {ctor: '[]'}
 									}),
 								_1: {
 									ctor: '::',
@@ -9416,7 +9347,7 @@ var _user$project$Main$viewForm = function (model) {
 										_elm_lang$html$Html$div,
 										{
 											ctor: '::',
-											_0: _elm_lang$html$Html_Attributes$id('div_id_password'),
+											_0: _elm_lang$html$Html_Attributes$id('div_id_login'),
 											_1: {
 												ctor: '::',
 												_0: _elm_lang$html$Html_Attributes$class('form-group'),
@@ -9429,7 +9360,7 @@ var _user$project$Main$viewForm = function (model) {
 												_elm_lang$html$Html$label,
 												{
 													ctor: '::',
-													_0: _elm_lang$html$Html_Attributes$for('id_password'),
+													_0: _elm_lang$html$Html_Attributes$for('id_login'),
 													_1: {
 														ctor: '::',
 														_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
@@ -9438,7 +9369,7 @@ var _user$project$Main$viewForm = function (model) {
 												},
 												{
 													ctor: '::',
-													_0: _elm_lang$html$Html$text('Password'),
+													_0: _elm_lang$html$Html$text('Email'),
 													_1: {ctor: '[]'}
 												}),
 											_1: {
@@ -9456,20 +9387,28 @@ var _user$project$Main$viewForm = function (model) {
 															_elm_lang$html$Html$input,
 															{
 																ctor: '::',
-																_0: _elm_lang$html$Html_Attributes$class('textinput textInput form-control'),
+																_0: _elm_lang$html$Html_Attributes$placeholder('Email'),
 																_1: {
 																	ctor: '::',
-																	_0: _elm_lang$html$Html_Attributes$id('id_password'),
+																	_0: _elm_lang$html$Html_Attributes$class('emailinput form-control'),
 																	_1: {
 																		ctor: '::',
-																		_0: _elm_lang$html$Html_Attributes$required(true),
+																		_0: _elm_lang$html$Html_Attributes$id('id_login'),
 																		_1: {
 																			ctor: '::',
-																			_0: _elm_lang$html$Html_Attributes$type_('password'),
+																			_0: _elm_lang$html$Html_Attributes$required(true),
 																			_1: {
 																				ctor: '::',
-																				_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PasswordChange),
-																				_1: {ctor: '[]'}
+																				_0: _elm_lang$html$Html_Attributes$placeholder('username@alwaysdata.net'),
+																				_1: {
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Attributes$type_('email'),
+																					_1: {
+																						ctor: '::',
+																						_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$EmailChange),
+																						_1: {ctor: '[]'}
+																					}
+																				}
 																			}
 																		}
 																	}
@@ -9481,7 +9420,79 @@ var _user$project$Main$viewForm = function (model) {
 												_1: {ctor: '[]'}
 											}
 										}),
-									_1: {ctor: '[]'}
+									_1: {
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$div,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$id('div_id_password'),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Attributes$class('form-group'),
+													_1: {ctor: '[]'}
+												}
+											},
+											{
+												ctor: '::',
+												_0: A2(
+													_elm_lang$html$Html$label,
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html_Attributes$for('id_password'),
+														_1: {
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('control-label requiredField'),
+															_1: {ctor: '[]'}
+														}
+													},
+													{
+														ctor: '::',
+														_0: _elm_lang$html$Html$text('Password'),
+														_1: {ctor: '[]'}
+													}),
+												_1: {
+													ctor: '::',
+													_0: A2(
+														_elm_lang$html$Html$div,
+														{
+															ctor: '::',
+															_0: _elm_lang$html$Html_Attributes$class('controls'),
+															_1: {ctor: '[]'}
+														},
+														{
+															ctor: '::',
+															_0: A2(
+																_elm_lang$html$Html$input,
+																{
+																	ctor: '::',
+																	_0: _elm_lang$html$Html_Attributes$class('textinput textInput form-control'),
+																	_1: {
+																		ctor: '::',
+																		_0: _elm_lang$html$Html_Attributes$id('id_password'),
+																		_1: {
+																			ctor: '::',
+																			_0: _elm_lang$html$Html_Attributes$required(true),
+																			_1: {
+																				ctor: '::',
+																				_0: _elm_lang$html$Html_Attributes$type_('password'),
+																				_1: {
+																					ctor: '::',
+																					_0: _elm_lang$html$Html_Events$onInput(_user$project$Main$PasswordChange),
+																					_1: {ctor: '[]'}
+																				}
+																			}
+																		}
+																	}
+																},
+																{ctor: '[]'}),
+															_1: {ctor: '[]'}
+														}),
+													_1: {ctor: '[]'}
+												}
+											}),
+										_1: {ctor: '[]'}
+									}
 								}
 							}
 						}),
