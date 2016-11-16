@@ -73,7 +73,7 @@
 
             var scrolled = false;
             function updateScroll(){
-                if (!scrolled) {
+                if (!scrolled && $('pre').html() !== undefined) {
                     $('pre').scrollTop($('pre')[0].scrollHeight);
                 }
             }
