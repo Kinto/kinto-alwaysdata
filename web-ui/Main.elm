@@ -240,7 +240,7 @@ viewForm model =
         [ Html.Attributes.class "login-holder"
         , Html.Events.onSubmit InstallKinto
         ]
-        [ Html.h1 [] [ Html.text "Login and deploy Kinto" ]
+        [ Html.h1 [] [ Html.text "Deploy Kinto to Alwaysdata" ]
         , Html.div
             [ Html.Attributes.class "well"
             , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
@@ -259,6 +259,7 @@ viewForm model =
             , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
             ]
             [ viewError model.error
+            , Html.h4 [] [ Html.text "Enter your Alwaysdata credentials below:" ]
             , Html.div
                 [ Html.Attributes.id "div_id_login"
                 , Html.Attributes.class "form-group"
