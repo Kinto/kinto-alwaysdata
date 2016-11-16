@@ -9218,7 +9218,7 @@ var _user$project$Main$viewForm = function (model) {
 			_0: _elm_lang$html$Html_Attributes$class('login-holder'),
 			_1: {
 				ctor: '::',
-				_0: _elm_lang$html$Html_Attributes$action('#'),
+				_0: _elm_lang$html$Html_Events$onSubmit(_user$project$Main$InstallKinto),
 				_1: {ctor: '[]'}
 			}
 		},
@@ -9495,11 +9495,7 @@ var _user$project$Main$viewForm = function (model) {
 								_1: {
 									ctor: '::',
 									_0: _elm_lang$html$Html_Attributes$class('btn btn-default'),
-									_1: {
-										ctor: '::',
-										_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$InstallKinto),
-										_1: {ctor: '[]'}
-									}
+									_1: {ctor: '[]'}
 								}
 							},
 							{
