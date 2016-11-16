@@ -9229,7 +9229,7 @@ var _user$project$Main$viewForm = function (model) {
 				{ctor: '[]'},
 				{
 					ctor: '::',
-					_0: _elm_lang$html$Html$text('Deploy Kinto to Alwaysdata'),
+					_0: _elm_lang$html$Html$text('Deploy Kinto to alwaysdata'),
 					_1: {ctor: '[]'}
 				}),
 			_1: {
@@ -9338,7 +9338,7 @@ var _user$project$Main$viewForm = function (model) {
 									{ctor: '[]'},
 									{
 										ctor: '::',
-										_0: _elm_lang$html$Html$text('Enter your Alwaysdata credentials below:'),
+										_0: _elm_lang$html$Html$text('Enter your alwaysdata credentials below:'),
 										_1: {ctor: '[]'}
 									}),
 								_1: {
