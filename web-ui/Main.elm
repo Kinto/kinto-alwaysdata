@@ -238,7 +238,7 @@ viewForm : Model -> Html.Html Msg
 viewForm model =
     Html.form
         [ Html.Attributes.class "login-holder"
-        , Html.Attributes.action "#"
+        , Html.Events.onSubmit InstallKinto
         ]
         [ Html.h1 [] [ Html.text "Login and deploy Kinto" ]
         , Html.div
@@ -307,7 +307,6 @@ viewForm model =
         , Html.button
             [ Html.Attributes.type_ "submit"
             , Html.Attributes.class "btn btn-default"
-            , Html.Events.onClick InstallKinto
             ]
             [ Html.text "Deploy my kinto!" ]
         , Html.div
