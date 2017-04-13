@@ -156,6 +156,10 @@ def configure_site(id_alwaysdata, credentials, prefixed_username):
     except requests.exceptions.HTTPError as error:
         print(response.json())
         raise KintoDeployException(error)
+
+
+def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, postgresql_host,
+                                        prefixed_username, file_root):
     response = requests.put(API_BASE_URL.format("/environment/python/"),
                             json={"python_version": "3.6.0"},
                             auth=credentials)
@@ -165,9 +169,6 @@ def configure_site(id_alwaysdata, credentials, prefixed_username):
         print(response.json())
         raise KintoDeployException(error)
 
-
-def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, postgresql_host,
-                                        prefixed_username, file_root):
     ftp = ftplib.FTP(ftp_host, id_alwaysdata, credentials[1])
 
     try:
