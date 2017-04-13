@@ -5,7 +5,7 @@ from collections import OrderedDict
 
 from .constants import STATUS, STATUS_KEY, LOGS_KEY
 
-KEYS = ['database', 'ssh_user', 'configuration', 'ssh_commands']
+KEYS = ['database', 'ssh_user', 'configuration', 'ssh_commands', 'user_site']
 
 
 class RedisStatusHandler(object):
