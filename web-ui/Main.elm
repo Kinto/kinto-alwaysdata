@@ -389,9 +389,9 @@ viewProgress model =
                 [ Html.ul []
                     [ statusToGlyph "Database: " progress.database
                     , statusToGlyph "SSH user: " progress.ssh_user
-                    , statusToGlyph "User site: " progress.user_site
                     , statusToGlyph "Configuration: " progress.configuration
                     , statusToGlyph "SSH commands: " progress.ssh_commands
+                    , statusToGlyph "User site: " progress.user_site
                     ]
                 ]
     in

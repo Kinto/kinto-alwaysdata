@@ -46,18 +46,6 @@ def deploy_kinto_to_alwaysdata(status_handler, id_alwaysdata, credentials, prefi
         logger.info("SSH user created.")
         status_handler.ssh_user = STATUS.CREATED
 
-    # Configure site
-    try:
-        logger.info("Create User Site")
-        configure_site(id_alwaysdata, credentials, prefixed_username)
-    except KintoDeployException as e:
-        logger.error("Error while configuring the user site: %s" % e)
-        status_handler.user_site = STATUS.ERROR
-        raise
-    else:
-        logger.info("User site created.")
-        status_handler.user_site = STATUS.CREATED
-
     # Configuration upload over FTP
     try:
         logger.info("Uploading the configuration")
@@ -82,6 +70,19 @@ def deploy_kinto_to_alwaysdata(status_handler, id_alwaysdata, credentials, prefi
     else:
         logger.info("Kinto installed: https://%s.alwaysdata.net/v1/" % id_alwaysdata)
         status_handler.ssh_commands = STATUS.CREATED
+
+    # Configure site
+    try:
+        logger.info("Create User Site")
+        configure_site(id_alwaysdata, credentials, prefixed_username)
+    except KintoDeployException as e:
+        logger.error("Error while configuring the user site: %s" % e)
+        status_handler.user_site = STATUS.ERROR
+        raise
+    else:
+        logger.info("User site created.")
+        status_handler.user_site = STATUS.CREATED
+
 
 
 def create_postgresql_database(id_alwaysdata, credentials, prefixed_username):
