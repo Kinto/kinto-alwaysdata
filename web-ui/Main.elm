@@ -45,6 +45,7 @@ type alias Progress =
     , ssh_user : Status
     , configuration : Status
     , ssh_commands : Status
+    , user_site : Status
     , url : String
     , logs : Maybe String
     }
@@ -62,7 +63,7 @@ type alias Model =
 
 init : ( Model, Cmd Msg )
 init =
-    Model "" "" Nothing Nothing (Progress Unknown Unknown Unknown Unknown "" Nothing) "" ! []
+    Model "" "" Nothing Nothing (Progress Unknown Unknown Unknown Unknown Unknown "" Nothing) "" ! []
 
 
 
@@ -147,11 +148,12 @@ statusDecoder =
 
 progressDecoder : Decode.Decoder Progress
 progressDecoder =
-    Decode.map6 Progress
+    Decode.map7 Progress
         (Decode.at [ "status", "database" ] statusDecoder)
         (Decode.at [ "status", "ssh_user" ] statusDecoder)
         (Decode.at [ "status", "configuration" ] statusDecoder)
         (Decode.at [ "status", "ssh_commands" ] statusDecoder)
+        (Decode.at [ "status", "user_site" ] statusDecoder)
         (Decode.field "url" Decode.string)
         (Decode.field "logs" (Decode.nullable Decode.string))
 
@@ -246,11 +248,9 @@ viewForm model =
             , Html.Attributes.style [ ( "background-color", "#efefef" ) ]
             ]
             [ Html.text "This will install kinto in the "
-            , Html.code [] [ Html.text "/www/" ]
-            , Html.text "directory of your account to make it run behind HTTPS on "
+            , Html.code [] [ Html.text "/kinto/" ]
+            , Html.text "directory of your account and make it run behind HTTPS on "
             , Html.code [] [ Html.text "<username>.alwaysdata.net" ]
-            , Html.br [] []
-            , Html.b [] [ Html.text "Make sure to save its content first." ]
             , Html.br [] []
             , Html.text "It will create a PostgreSQL database and a SSH user."
             ]
@@ -389,6 +389,7 @@ viewProgress model =
                 [ Html.ul []
                     [ statusToGlyph "Database: " progress.database
                     , statusToGlyph "SSH user: " progress.ssh_user
+                    , statusToGlyph "User site: " progress.user_site
                     , statusToGlyph "Configuration: " progress.configuration
                     , statusToGlyph "SSH commands: " progress.ssh_commands
                     ]
