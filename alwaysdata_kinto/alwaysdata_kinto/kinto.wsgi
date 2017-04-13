@@ -1,4 +1,3 @@
-lebunetel@ssh2:~$ cat www/kinto.wsgi
 import configparser
 import logging.config
 import os

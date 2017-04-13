@@ -123,25 +123,29 @@ def configure_site(id_alwaysdata, credentials, prefixed_username):
         raise KintoDeployException(error)
     current_site = None
     for site in response.json():
+        print(site)
         for address in site['addresses']:
-            if address == '{}.alwaysdata.net'.format(id_alwaysdata):
+            if address == '{}.alwaysdata.net/'.format(id_alwaysdata):
                 current_site = site
                 break
         if current_site:
             break
     if current_site:
+        print("Delete previous site.")
         requests.delete(API_BASE_URL.format("/site/{}".format(current_site['id'])),
                         auth=credentials)
         try:
             response.raise_for_status()
         except requests.exceptions.HTTPError as error:
             # The database may already exist.
+            print(response.json())
             raise KintoDeployException(error)
 
     # Only one address for this site, let's change it to setup kinto on it.
     response = requests.post(API_BASE_URL.format("/site/"),
-                             json={"type": "wsgi", "path": "/kinto/", "ssl_force": True,
-                                   "addresses": ['{}.alwaysdata.net'.format(id_alwaysdata)],
+                             json={"name": "kinto", "type": "wsgi",
+                                   "path": "/kinto/kinto.wsgi", "ssl_force": True,
+                                   "addresses": ['{}.alwaysdata.net/'.format(id_alwaysdata)],
                                    "working_directory": "/kinto/",
                                    "virtualenv_directory": "/kinto/venv/",
                                    "static_paths": "/attachments/=/kinto/attachments/"},
@@ -149,6 +153,15 @@ def configure_site(id_alwaysdata, credentials, prefixed_username):
     try:
         response.raise_for_status()
     except requests.exceptions.HTTPError as error:
+        print(response.json())
+        raise KintoDeployException(error)
+    response = requests.put(API_BASE_URL.format("/environment/python/"),
+                            json={"python_version": "3.6.0"},
+                            auth=credentials)
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as error:
+        print(response.json())
         raise KintoDeployException(error)
 
 
@@ -192,7 +205,7 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
 
     # Create virtualenv
     stdin, stdout, stderr = ssh.exec_command(
-        'virtualenv kinto/venv/ --python=python3.6'
+        'virtualenv kinto/venv/'
     )
     logs.write(stdout.read())
     logs.write(stderr.read())
