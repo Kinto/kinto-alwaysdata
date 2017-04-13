@@ -5,10 +5,8 @@ import logging
 import os
 import requests
 
-from paramiko import ssh_exception
 from paramiko.client import SSHClient, AutoAddPolicy
 from six import StringIO
-from time import sleep
 
 from .constants import API_BASE_URL, STATUS
 from .exceptions import KintoDeployException, DatabaseAlreadyExists, SSHUserAlreadyExists
@@ -47,6 +45,18 @@ def deploy_kinto_to_alwaysdata(status_handler, id_alwaysdata, credentials, prefi
     else:
         logger.info("SSH user created.")
         status_handler.ssh_user = STATUS.CREATED
+
+    # Configure site
+    try:
+        logger.info("Create User Site")
+        configure_site(id_alwaysdata, credentials, prefixed_username)
+    except KintoDeployException as e:
+        logger.error("Error while configuring the user site: %s" % e)
+        status_handler.user_site = STATUS.ERROR
+        raise
+    else:
+        logger.info("User site created.")
+        status_handler.user_site = STATUS.CREATED
 
     # Configuration upload over FTP
     try:
@@ -104,16 +114,54 @@ def create_ssh_user(id_alwaysdata, credentials, prefixed_username):
         raise SSHUserAlreadyExists(error)
 
 
+def configure_site(id_alwaysdata, credentials, prefixed_username):
+    response = requests.get(API_BASE_URL.format("/site/"), auth=credentials)
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as error:
+        # The database may already exist.
+        raise KintoDeployException(error)
+    current_site = None
+    for site in response.json():
+        for address in site['addresses']:
+            if address == '{}.alwaysdata.net'.format(id_alwaysdata):
+                current_site = site
+                break
+        if current_site:
+            break
+    if current_site:
+        requests.delete(API_BASE_URL.format("/site/{}".format(current_site['id'])),
+                        auth=credentials)
+        try:
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as error:
+            # The database may already exist.
+            raise KintoDeployException(error)
+
+    # Only one address for this site, let's change it to setup kinto on it.
+    response = requests.post(API_BASE_URL.format("/site/"),
+                             json={"type": "wsgi", "path": "/kinto/", "ssl_force": True,
+                                   "addresses": ['{}.alwaysdata.net'.format(id_alwaysdata)],
+                                   "working_directory": "/kinto/",
+                                   "virtualenv_directory": "/kinto/venv/",
+                                   "static_paths": "/attachments/=/kinto/attachments/"},
+                             auth=credentials)
+    try:
+        response.raise_for_status()
+    except requests.exceptions.HTTPError as error:
+        raise KintoDeployException(error)
+
+
 def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, postgresql_host,
                                         prefixed_username, file_root):
     ftp = ftplib.FTP(ftp_host, id_alwaysdata, credentials[1])
 
     try:
-        ftp.mkd(".local")
+        ftp.mkd("kinto")
     except ftplib.error_perm:
         pass
     try:
-        ftp.mkd("kinto")
+        ftp.mkd("kinto/attachments/")
     except ftplib.error_perm:
         pass
     with open(os.path.join(file_root, "kinto.ini"), "rb") as f:
@@ -127,16 +175,10 @@ def upload_configuration_files_over_ftp(id_alwaysdata, credentials, ftp_host, po
             hmac_secret=hashlib.sha256(':'.join(credentials)).hexdigest())
         ftp.storbinary("STOR kinto/kinto.ini", StringIO(ini_content))
 
-    with open(os.path.join(file_root, "kinto.fcgi"), "rb") as f:
-        ftp.storbinary("STOR www/kinto.fcgi", f)
-        ftp.sendcmd('SITE CHMOD 755 www/kinto.fcgi')
-        try:
-            ftp.delete('www/index.html')
-        except ftplib.error_perm:
-            pass
+    with open(os.path.join(file_root, "kinto.wsgi"), "rb") as f:
+        ftp.storbinary("STOR kinto/kinto.wsgi", f)
+        ftp.sendcmd('SITE CHMOD 755 kinto/kinto.wsgi')
 
-    with open(os.path.join(file_root, "htaccess"), "rb") as f:
-        ftp.storbinary("STOR www/.htaccess", f)
     ftp.close()
 
 
@@ -148,39 +190,9 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
     ssh.set_missing_host_key_policy(AutoAddPolicy())
     ssh.connect(ssh_host, username=prefixed_username, password=credentials[1], look_for_keys=False)
 
-    # Install pip
-    retry = 30
-    error = None
-    while retry > 0:
-        try:
-            stdin, stdout, stderr = ssh.exec_command(
-                'PYTHONPATH=~/.local/ easy_install-2.6 --install-dir=~/.local -U pip'
-            )
-            retry = 0
-        except ssh_exception.AuthenticationException as e:
-            error = e
-            sleep(5)
-            retry -= 1
-
-    if retry == 0 and error is not None:
-        logs.write(error)
-
-    logs.write(stdout.read())
-    logs.write(stderr.read())
-    status_handler.ssh_logs = logs
-
-    # Install virtualenv
-    stdin, stdout, stderr = ssh.exec_command(
-        'PYTHONPATH=~/.local/ ~/.local/pip install --user --no-binary --upgrade '
-        'setuptools virtualenv virtualenvwrapper'
-    )
-    logs.write(stdout.read())
-    logs.write(stderr.read())
-    status_handler.ssh_logs = logs
-
     # Create virtualenv
     stdin, stdout, stderr = ssh.exec_command(
-        '~/.local/bin/virtualenv kinto/venv/ --python=python2.7'
+        'virtualenv kinto/venv/ --python=python3.6'
     )
     logs.write(stdout.read())
     logs.write(stderr.read())
@@ -188,14 +200,14 @@ def install_kinto_remotely(id_alwaysdata, credentials, ssh_host, prefixed_userna
 
     # Install Kinto in the virtualenv
     stdin, stdout, stderr = ssh.exec_command(
-        'kinto/venv/bin/pip install kinto[postgresql] kinto-attachment flup'
+        'kinto/venv/bin/pip install kinto[postgresql] kinto-attachment'
     )
     logs.write(stdout.read())
     logs.write(stderr.read())
     status_handler.ssh_logs = logs
 
     # Run kinto migration to setup the database.
-    stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/kinto --ini kinto/kinto.ini migrate')
+    stdin, stdout, stderr = ssh.exec_command('kinto/venv/bin/kinto migrate --ini kinto/kinto.ini')
     logs.write(stdout.read())
     logs.write(stderr.read())
     status_handler.ssh_logs = logs
